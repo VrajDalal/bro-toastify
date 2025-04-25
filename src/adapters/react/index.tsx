@@ -15,16 +15,14 @@ export const ToastContainer: React.FC<{
   useEffect(() => {
     // Subscribe to toast events
     const createUnsubscribe = on('create', (toast: BroToastify) => {
-      if (toast.position === position) {
-        setToasts(prev => {
-          const newToasts = [...prev, toast];
-          return newestOnTop ? newToasts : newToasts.reverse();
-        });
-      }
+      setToasts((prev) => {
+        const newToasts = [...prev, toast];
+        return newestOnTop ? newToasts : newToasts.reverse();
+      });
     });
     
     const dismissUnsubscribe = on('dismiss', (toast: BroToastify) => {
-      setToasts(prev => prev.filter(t => t.id !== toast.id));
+      setToasts((prev) => prev.filter((t) => t.id !== toast.id));
     });
     
     // Cleanup
@@ -35,7 +33,7 @@ export const ToastContainer: React.FC<{
   }, [position, newestOnTop]);
   
   return (
-    <div className={`toast-container toast-${position}`}>
+    <div className={`bro-toastify-container bro-toastify-${position}`}>
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} />
       ))}

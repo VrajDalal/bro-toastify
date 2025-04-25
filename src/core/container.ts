@@ -4,7 +4,9 @@ const containers: Map<string, HTMLElement> = new Map()
 
 export function createContainer(position: BroToastifyToastifyOptions['position']): HTMLElement {
     if (containers.has(position!)) {
-        return containers.get(position!)!
+        const existingContainer = containers.get(position!)!;
+        existingContainer.className = `bro-toastify-container bro-toastify-${position}`;
+        return existingContainer;
     }
     console.debug('Creating container for position:', position);
 
