@@ -19,6 +19,7 @@ export const Vanilla = VanillaAdapter;
 export { broToastify } from './core/bro-toastify';
 
 // Also create a default export for convenience
+export { ToastContainer } from './adapters/react'; // Adjust the path if necessary
 import { broToastify } from './core/bro-toastify';
 export default broToastify;
 

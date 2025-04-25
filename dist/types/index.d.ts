@@ -9,5 +9,6 @@ export declare const Angular: typeof AngularAdapter;
 export declare const Svelte: typeof SvelteAdapter;
 export declare const Vanilla: typeof VanillaAdapter;
 export { broToastify } from './core/bro-toastify';
+export { ToastContainer } from './adapters/react';
 import { broToastify } from './core/bro-toastify';
 export default broToastify;
