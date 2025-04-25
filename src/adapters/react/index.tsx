@@ -23,6 +23,7 @@ export const ToastContainer: React.FC<{
     
     const dismissUnsubscribe = on('dismiss', (toast: BroToastify) => {
       setToasts((prev) => prev.filter((t) => t.id !== toast.id));
+      console.log(toast)
     });
     
     // Cleanup
@@ -33,7 +34,7 @@ export const ToastContainer: React.FC<{
   }, [position, newestOnTop]);
   
   return (
-    <div className={`bro-toastify-container broToastify-${position}`}>
+    <div className={`broToastify-container broToastify-${position}`}>
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} />
       ))}
