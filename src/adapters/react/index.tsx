@@ -48,7 +48,7 @@ const ToastItem: React.FC<{ toast: BroToastify }> = ({ toast }) => {
   const { id, type, message, title, dismissible } = toast;
   
   const handleDismiss = useCallback(() => {
-    coreToast.dismiss(id);
+    coreToast.dismissible(id);
   }, [id]);
   
   return (
@@ -89,7 +89,7 @@ export const broToastify = () => {
       coreToast.info(message, options),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => 
       coreToast.warning(message, options),
-    dismiss: coreToast.dismiss,
+    dismissible: coreToast.dismissible,
     clearAll: coreToast.clearAll
   };
 };

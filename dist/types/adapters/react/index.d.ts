@@ -10,7 +10,7 @@ export declare const broToastify: () => {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    dismiss: typeof import("../../core/bro-toastify").dismissBroTostify;
+    dismissible: typeof import("../../core/bro-toastify").dismissBroTostify;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };
 export declare const toast: {
@@ -19,6 +19,6 @@ export declare const toast: {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    dismiss: typeof import("../../core/bro-toastify").dismissBroTostify;
+    dismissible: typeof import("../../core/bro-toastify").dismissBroTostify;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };

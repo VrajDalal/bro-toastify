@@ -9,6 +9,6 @@ export declare const broToastify: {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    dismiss: typeof dismissBroTostify;
+    dismissible: typeof dismissBroTostify;
     clearAll: typeof clearBroToastify;
 };

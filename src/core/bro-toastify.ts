@@ -126,7 +126,7 @@ export const broToastify = {
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
         createBroToastify({ message, type: 'warning', ...options }),
 
-    dismiss: dismissBroTostify,
+    dismissible: dismissBroTostify,
     clearAll: clearBroToastify,
 }
 
