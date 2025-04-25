@@ -2,10 +2,6 @@
 
 A lightweight, customizable, and framework-agnostic toast notification library for JavaScript applications.
 
-![npm](https://img.shields.io/npm/v/bro-toastify)
-![license](https://img.shields.io/npm/l/bro-toastify)
-![downloads](https://img.shields.io/npm/dm/bro-toastify)
-
 ## Features
 
 - 🚀 **Framework Agnostic**: Works with React, Vue, Angular, Svelte, or vanilla JavaScript
