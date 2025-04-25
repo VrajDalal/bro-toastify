@@ -33,7 +33,7 @@ export const ToastContainer: React.FC<{
   }, [position, newestOnTop]);
   
   return (
-    <div className={`bro-toastify-container bro-toastify-${position}`}>
+    <div className={`bro-toastify-container broToastify-${position}`}>
       {toasts.map(toast => (
         <ToastItem key={toast.id} toast={toast} />
       ))}
@@ -51,16 +51,16 @@ const ToastItem: React.FC<{ toast: BroToastify }> = ({ toast }) => {
   
   return (
     <div 
-      className={`toast-notification toast-${type} ${toast.customClass || ''}`}
+      className={`broToastify-notification broToastify-${type} ${toast.customClass || ''}`}
       role="alert"
       onClick={toast.onClick}
     >
-      {title && <div className="toast-title">{title}</div>}
-      <div className="toast-message">{message}</div>
+      {title && <div className="broToastify-title">{title}</div>}
+      <div className="broToastify-message">{message}</div>
       
       {dismissible && (
         <button 
-          className="toast-close" 
+          className="broToastify-close" 
           aria-label="Close"
           onClick={(e) => {
             e.stopPropagation();
