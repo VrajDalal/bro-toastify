@@ -3,6 +3,7 @@ import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export declare const ToastContainer: React.FC<{
     position?: BroToastifyToastifyOptions['position'];
     newestOnTop?: boolean;
+    dismissible?: boolean;
 }>;
 export declare const broToastify: () => {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
@@ -10,7 +11,7 @@ export declare const broToastify: () => {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    dismissible: typeof import("../../core/bro-toastify").dismissBroTostify;
+    dismiss: (id: string) => void;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };
 export declare const toast: {

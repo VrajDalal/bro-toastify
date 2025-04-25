@@ -47,7 +47,6 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
     //Auto dismiss
     if (mergedOptions.duration && mergedOptions.duration > 0) {
         setTimeout(() => {
-            console.debug('Auto-dismissing toast with ID:', id);
             dismissBroTostify(id);
         }, mergedOptions.duration);
     }
@@ -57,16 +56,18 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
 
 //dismiss broToastify
 export function dismissBroTostify(id: string): void {
-    const BroToastify = broToastifys.get(id);
+    const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id);
+
     if (BroToastify) {
-        emit('dismissible', BroToastify);
+        broToastifys.delete(id); // Remove the toast from the Map
+        emit('dismiss', BroToastify);
 
         if (BroToastify.onClose) {
             BroToastify.onClose();
         }
 
         // Remove the toast element from the DOM
-        const toastElement = document.getElementById(`bro-toastify-${id}`);
+        const toastElement = document.getElementById(`broToastify-${id}`);
         if (toastElement) {
             toastElement.remove();
         }

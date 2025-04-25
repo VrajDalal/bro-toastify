@@ -6,9 +6,11 @@ import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export const ToastContainer: React.FC<{
   position?: BroToastifyToastifyOptions['position'],
   newestOnTop?: boolean
+  dismissible?: boolean
 }> = ({ 
   position = 'top-right',
-  newestOnTop = true
+  newestOnTop = true,
+  dismissible = false
 }) => {
   const [toasts, setToasts] = useState<BroToastify[]>([]);
   
@@ -23,7 +25,6 @@ export const ToastContainer: React.FC<{
     
     const dismissUnsubscribe = on('dismiss', (toast: BroToastify) => {
       setToasts((prev) => prev.filter((t) => t.id !== toast.id));
-      console.log(toast)
     });
     
     // Cleanup
@@ -36,15 +37,15 @@ export const ToastContainer: React.FC<{
   return (
     <div className={`broToastify-container broToastify-${position}`}>
       {toasts.map(toast => (
-        <ToastItem key={toast.id} toast={toast} />
+        <ToastItem key={toast.id} toast={toast} dismissible={dismissible} />
       ))}
     </div>
   );
 };
 
 // Individual toast component
-const ToastItem: React.FC<{ toast: BroToastify }> = ({ toast }) => {
-  const { id, type, message, title, dismissible } = toast;
+const ToastItem: React.FC<{ toast: BroToastify; dismissible: boolean }> = ({ toast, dismissible }) => {
+  const { id, type, message, title } = toast;
   
   const handleDismiss = useCallback(() => {
     coreToast.dismissible(id);
@@ -88,7 +89,7 @@ export const broToastify = () => {
       coreToast.info(message, options),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => 
       coreToast.warning(message, options),
-    dismissible: coreToast.dismissible,
+    dismiss: (id:string) => coreToast.dismissible(id),
     clearAll: coreToast.clearAll
   };
 };
