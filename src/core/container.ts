@@ -2,17 +2,21 @@ import { BroToastifyToastifyOptions } from "./types";
 
 const containers: Map<string, HTMLElement> = new Map()
 
-export function createContainer(position: BroToastifyToastifyOptions['position']): HTMLElement {
+export function createContainer(position: BroToastifyToastifyOptions['position']): HTMLElement | null {
+    if (typeof window === 'undefined') {
+        return null; // Return null during SSR
+    }
+
     if (containers.has(position!)) {
         const existingContainer = containers.get(position!)!;
-        existingContainer.className = `bro-toastify-container bro-toastify-${position}`;
+        existingContainer.className = `broToastify-container broToastify-${position}`;
         return existingContainer;
     }
     console.debug('Creating container for position:', position);
 
 
     const container = document.createElement('div')
-    container.className = `bro-toastify-container bro-toastify-${position}`
+    container.className = `broToastify-container broToastify-${position}`
     container.setAttribute('role', 'region')
     container.setAttribute('aria-live', 'polite')
     container.setAttribute('aria-atomic', 'true')

@@ -2,7 +2,7 @@ import { getAnimationKeyframes } from '../core/animation';
 
 
 export function getBroToastifyStyles(): string {
-    return `
+  return `
     .broToastify-container {
       position: fixed;
       z-index: 9999;
@@ -158,12 +158,22 @@ export function getBroToastifyStyles(): string {
 }
 
 export function injectStyles(): void {
+  if (typeof window === 'undefined') {
+    return; // Do nothing during SSR
+  }
   console.debug('injectStyles function called'); // Log when the function is called
+
+  if (!document.getElementById('broToastify-styles')) {
+    const style = document.createElement('style');
+    style.id = 'broToastify-styles';
+    style.innerHTML = getBroToastifyStyles();
+    document.head.appendChild(style);
+  }
 
   // Check if styles are already injected
   if (document.getElementById('broToastify-styles')) {
-      console.debug('Styles are already injected'); // Log if styles are already present
-      return;
+    console.debug('Styles are already injected'); // Log if styles are already present
+    return;
   }
 
   // Create style element
@@ -176,9 +186,9 @@ export function injectStyles(): void {
 
   // Append to head
   if (document.head) {
-      document.head.appendChild(styleElement);
-      console.debug('Style element appended to head'); // Log when the style element is appended
+    document.head.appendChild(styleElement);
+    console.debug('Style element appended to head'); // Log when the style element is appended
   } else {
-      console.error('document.head is not available'); // Log an error if document.head is missing
+    console.error('document.head is not available'); // Log an error if document.head is missing
   }
 }
