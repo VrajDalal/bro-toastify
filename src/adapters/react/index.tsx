@@ -25,7 +25,7 @@ export const ToastContainer: React.FC<{
       if(!dismissible && toast.duration && toast.duration > 0) {
         setTimeout(() => {
           coreToast.dismissible(toast.id);
-        });
+        }, toast.duration);
       }
     });
     
