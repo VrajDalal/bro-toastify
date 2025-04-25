@@ -35,7 +35,7 @@ export function init(options?: Partial<BroToastifyContainerOptions>): void {
         // Set up dismiss event listener
         document.addEventListener('toast:dismiss', (e: any) => {
             if (e.detail.id === toast.id) {
-                coreToast.dismiss(toast.id);
+                coreToast.dismissible(toast.id);
                 toastElement.remove();
             }
         });
@@ -43,7 +43,7 @@ export function init(options?: Partial<BroToastifyContainerOptions>): void {
         // Auto dismiss
         if (toast.duration && toast.duration > 0) {
             setTimeout(() => {
-                coreToast.dismiss(toast.id);
+                coreToast.dismissible(toast.id);
                 toastElement.remove();
             }, toast.duration);
         }

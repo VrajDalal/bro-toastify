@@ -32,7 +32,7 @@ export default {
       exports: "named",
     },
   ],
-  external: ["react", "vue", "@angular/core", "svelte", "svelte/store"], // Keep svelte and svelte/store as external
+  external: ["react", "vue", "@angular/core", "svelte", "svelte/store"],
   plugins: [
     typescript({
       tsconfig: "./tsconfig.json",

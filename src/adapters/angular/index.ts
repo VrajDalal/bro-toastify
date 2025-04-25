@@ -33,7 +33,7 @@ export class ToastService {
   }
 
   dismiss(id: string) {
-    coreToast.dismiss(id);
+    coreToast.dismissible(id);
   }
 
   clearAll() {
@@ -79,7 +79,7 @@ export class ToastContainerComponent {
   }
 
   handleDismiss(id: string) {
-    coreToast.dismiss(id);
+    coreToast.dismissible(id);
   }
 }
 

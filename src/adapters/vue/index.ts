@@ -16,7 +16,7 @@
 //             coreToast.info(message, options),
 //         warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
 //             coreToast.warning(message, options),
-//         dismiss: coreToast.dismiss,
+//         dismissible: coreToast.dismissible,
 //         clearAll: coreToast.clearAll
 //     };
 // }
@@ -32,7 +32,7 @@
 //     },
 //     setup(props: any) {
 //         const handleDismiss = () => {
-//             coreToast.dismiss(props.toast.id);
+//             coreToast.dismissible(props.toast.id);
 //         };
 
 //         const handleClick = () => {

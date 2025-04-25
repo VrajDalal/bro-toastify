@@ -25,6 +25,6 @@ export declare const toast: {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    dismiss: typeof import("../../core/bro-toastify").dismissBroTostify;
+    dismissible: typeof import("../../core/bro-toastify").dismissBroTostify;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };

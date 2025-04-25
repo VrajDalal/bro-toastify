@@ -52,7 +52,7 @@ export const toast = {
   warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
     coreToast.warning(message, options),
 
-  dismiss: coreToast.dismiss,
+  dismissible: coreToast.dismissible,
   clearAll: coreToast.clearAll
 };
 
