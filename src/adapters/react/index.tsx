@@ -6,11 +6,11 @@ import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export const ToastContainer: React.FC<{
   position?: BroToastifyToastifyOptions['position'],
   newestOnTop?: boolean
-  dismissible?: boolean
+  dismissible?: any
 }> = ({ 
   position = 'top-right',
   newestOnTop = true,
-  dismissible = false
+  dismissible
 }) => {
   const [toasts, setToasts] = useState<BroToastify[]>([]);
   
@@ -21,6 +21,12 @@ export const ToastContainer: React.FC<{
         const newToasts = [...prev, toast];
         return newestOnTop ? newToasts : newToasts.reverse();
       });
+
+      if(!dismissible && toast.duration && toast.duration > 0) {
+        setTimeout(() => {
+          coreToast.dismissible(toast.id);
+        }, toast.duration);
+      }
     });
     
     const dismissUnsubscribe = on('dismiss', (toast: BroToastify) => {
@@ -32,12 +38,12 @@ export const ToastContainer: React.FC<{
       createUnsubscribe();
       dismissUnsubscribe();
     };
-  }, [position, newestOnTop]);
+  }, [newestOnTop, dismissible]);
   
   return (
     <div className={`broToastify-container broToastify-${position}`}>
       {toasts.map(toast => (
-        <ToastItem key={toast.id} toast={toast} dismissible={dismissible} />
+        <ToastItem key={toast.id} toast={toast} dismissible={!!dismissible} />
       ))}
     </div>
   );
