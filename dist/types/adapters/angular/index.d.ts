@@ -25,6 +25,14 @@ export declare const toast: {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    dismissible: typeof import("../../core/bro-toastify").dismissBroTostify;
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
+    promises: (promise: Promise<any>, message: {
+        loading: string;
+        success: string;
+        error: string;
+    }, options?: Partial<BroToastifyToastifyOptions> | undefined) => void;
+    isToastActive: (id: string) => boolean;
+    dismiss: (id: string) => void;
+    dismissible: (id: string) => void;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };

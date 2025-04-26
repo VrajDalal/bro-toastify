@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect } from 'react';
+
+import React, { useEffect, useState, useCallback } from 'react';
 import { broToastify as coreToast, on } from '../../core/bro-toastify'
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
@@ -12,56 +13,43 @@ export const ToastContainer: React.FC<{
   newestOnTop = true,
   dismissible
 }) => {
+    const [toasts, setToasts] = useState<BroToastify[]>([]);
+
     useEffect(() => {
-      const container = document.createElement('div');
-      container.className = `broToastify-container broToastify-${position}`;
-      document.body.appendChild(container);
+      // Subscribe to toast events
+      const createUnsubscribe = on('create', (toast: BroToastify) => {
+        setToasts((prev) => {
+          const newToasts = [...prev, toast];
+          return newestOnTop ? newToasts : newToasts.reverse();
+        });
 
-      const handleCreate = (toast: BroToastify) => {
-        const toastElement = document.createElement('div');
-        toastElement.className = `broToastify-notification broToastify-${toast.type}`;
-        toastElement.innerHTML = `
-        <div class="broToastify-title">${toast.title || ''}</div>
-        <div class="broToastify-message">${toast.message}</div>
-        ${dismissible
-            ? `<button class="broToastify-close" aria-label="Close">&times;</button>`
-            : ''
-          }
-      `;
-
-        if (dismissible) {
-          const closeButton = toastElement.querySelector('.broToastify-close');
-          closeButton?.addEventListener('click', () => {
-            container.removeChild(toastElement);
-          });
-        }
-
-        if (toast.duration && toast.duration > 0) {
+        if (!dismissible && toast.duration && toast.duration > 0) {
           setTimeout(() => {
-            if (container.contains(toastElement)) {
-              container.removeChild(toastElement);
-            }
+            coreToast.dismissible(toast.id);
           }, toast.duration);
         }
+      });
 
-        if (newestOnTop) {
-          container.prepend(toastElement);
-        } else {
-          container.appendChild(toastElement);
-        }
-      };
+      const dismissUnsubscribe = on('dismiss', (toast: BroToastify) => {
+        setToasts((prev) => prev.filter((t) => t.id !== toast.id));
+      });
 
-      const unsubscribeCreate = on('create', handleCreate);
-
+      // Cleanup
       return () => {
-        unsubscribeCreate();
-        document.body.removeChild(container);
+        createUnsubscribe();
+        dismissUnsubscribe();
       };
-    }, [position, newestOnTop, dismissible]);
+    }, [newestOnTop, dismissible]);
 
-    return null
+    return (
+      <div className={`broToastify-container broToastify-${position}`}>
+        {toasts.map(toast => (
+          <ToastItem key={toast.id} toast={toast} dismissible={!!dismissible} />
+        ))}
+      </div>
+    );
   };
-
+``
 // Individual toast component
 const ToastItem: React.FC<{ toast: BroToastify; dismissible: boolean }> = ({ toast, dismissible }) => {
   const { id, type, message, title } = toast;
