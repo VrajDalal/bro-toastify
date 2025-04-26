@@ -1,3 +1,4 @@
+"use client";
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { broToastify as coreToast, on } from '../../core/bro-toastify'
