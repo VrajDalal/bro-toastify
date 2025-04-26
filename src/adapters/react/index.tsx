@@ -14,7 +14,7 @@ export const ToastContainer: React.FC<{
 }) => {
     if (typeof window !== "undefined") {
       const container =
-        document.querySelector(`.broToastify-container.broToastify-${position}`) ||
+        document.querySelector(`.broToastify-container broToastify-${position}`) ||
         document.createElement("div");
 
       if (!container.parentElement) {
