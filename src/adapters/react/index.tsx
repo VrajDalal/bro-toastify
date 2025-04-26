@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import { broToastify as coreToast, on } from '../../core/bro-toastify'
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
@@ -21,86 +21,107 @@ export const ToastContainer: React.FC<{
         container.className = `broToastify-container broToastify-${position}`;
         document.body.appendChild(container);
 
+        const activeToasts = new Map<string, HTMLElement>();
+
         on("create", (toast: BroToastify) => {
-          const toastElement = document.createElement("div");
-          toastElement.className = `broToastify-notification broToastify-${toast.type}`;
+          let toastElement = activeToasts.get(toast.id);
+
+          if (!toastElement) {
+            // Create a new toast element if it doesn't exist
+            toastElement = document.createElement("div");
+            toastElement.className = `broToastify-notification broToastify-${toast.type}`;
+            toastElement.setAttribute("data-id", toast.id);
+
+            if (newestOnTop) {
+              container.prepend(toastElement);
+            } else {
+              container.appendChild(toastElement);
+            }
+
+            activeToasts.set(toast.id, toastElement);
+          }
+
+          // Update the toast content
           toastElement.innerHTML = `
-          <div class="broToastify-title">${toast.title || ""}</div>
-          <div class="broToastify-message">${toast.message}</div>
-          ${dismissible
+            <div class="broToastify-title">${toast.title || ""}</div>
+            <div class="broToastify-message">${toast.message}</div>
+            ${dismissible
               ? `<button class="broToastify-close" aria-label="Close">&times;</button>`
               : ""
             }
-        `;
+          `;
 
           if (dismissible) {
             const closeButton = toastElement.querySelector(".broToastify-close");
             closeButton?.addEventListener("click", () => {
-              container.removeChild(toastElement);
+              container.removeChild(toastElement!);
+              activeToasts.delete(toast.id);
             });
           }
 
           if (toast.duration && toast.duration > 0) {
             setTimeout(() => {
-              if (container.contains(toastElement)) {
-                container.removeChild(toastElement);
+              if (container.contains(toastElement!)) {
+                container.removeChild(toastElement!);
+                activeToasts.delete(toast.id);
               }
             }, toast.duration);
           }
+        });
 
-          if (newestOnTop) {
-            container.prepend(toastElement);
-          } else {
-            container.appendChild(toastElement);
+        on("dismiss", (id: string) => {
+          const toastElement = activeToasts.get(id);
+          if (toastElement) {
+            container.removeChild(toastElement);
+            activeToasts.delete(id);
           }
         });
       }
     }
-
     return null;
   };
 
 // Individual toast component
-const ToastItem: React.FC<{ toast: BroToastify; dismissible: boolean }> = ({ toast, dismissible }) => {
-  const { id, type, message, title } = toast;
+// const ToastItem: React.FC<{ toast: BroToastify; dismissible: boolean }> = ({ toast, dismissible }) => {
+//   const { id, type, message, title } = toast;
 
-  const handleDismiss = useCallback(() => {
-    coreToast.dismissible(id);
-  }, [id]);
+//   const handleDismiss = useCallback(() => {
+//     coreToast.dismissible(id);
+//   }, [id]);
 
-  return (
-    <div
-      className={`broToastify-notification broToastify-${type} ${toast.customClass || ''}`}
-      role="alert"
-      onClick={toast.onClick}
-    >
-      {title && <div className="broToastify-title">{title}</div>}
-      <div className="broToastify-message">
-        {type === 'loading' ? (
-          <div className="broToastify-loader-container">
-            <div className="broToastify-loader"></div>
-            <div className="broToastify-loader-message">{message}</div>
-          </div>
-        ) : (
-          message
-        )}
-      </div>
+//   return (
+//     <div
+//       className={`broToastify-notification broToastify-${type} ${toast.customClass || ''}`}
+//       role="alert"
+//       onClick={toast.onClick}
+//     >
+//       {title && <div className="broToastify-title">{title}</div>}
+//       <div className="broToastify-message">
+//         {type === 'loading' ? (
+//           <div className="broToastify-loader-container">
+//             <div className="broToastify-loader"></div>
+//             <div className="broToastify-loader-message">{message}</div>
+//           </div>
+//         ) : (
+//           message
+//         )}
+//       </div>
 
-      {dismissible && (
-        <button
-          className="broToastify-close"
-          aria-label="Close"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleDismiss();
-          }}
-        >
-          &times;
-        </button>
-      )}
-    </div>
-  );
-};
+//       {dismissible && (
+//         <button
+//           className="broToastify-close"
+//           aria-label="Close"
+//           onClick={(e) => {
+//             e.stopPropagation();
+//             handleDismiss();
+//           }}
+//         >
+//           &times;
+//         </button>
+//       )}
+//     </div>
+//   );
+// };
 
 // Hook for using toast
 export const broToastify = () => {
