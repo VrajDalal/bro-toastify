@@ -1,83 +1,126 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { broToastify as coreToast, on } from '../../core/bro-toastify'
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
 // React component for toast container
 export const ToastContainer: React.FC<{
   position?: BroToastifyToastifyOptions['position'],
-  newestOnTop?: boolean
+  newestOnTop?: any
   dismissible?: any
 }> = ({
   position = 'top-right',
-  newestOnTop = true,
+  newestOnTop,
   dismissible
 }) => {
-    if (typeof window !== "undefined") {
-      const container =
-        document.querySelector(`.broToastify-container broToastify-${position}`) ||
-        document.createElement("div");
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const activeToastsRef = useRef<Map<string, HTMLElement>>(new Map());
 
-      if (!container.parentElement) {
+    useEffect(() => {
+      if (typeof window === "undefined") return
+
+      let container = document.querySelector(`.broToastify-container broToastify-${position}`);
+      if (!container) {
+        container = document.createElement('div');
         container.className = `broToastify-container broToastify-${position}`;
         document.body.appendChild(container);
-
-        const activeToasts = new Map<string, HTMLElement>();
-
-        on("create", (toast: BroToastify) => {
-          let toastElement = activeToasts.get(toast.id);
-
-          if (!toastElement) {
-            // Create a new toast element if it doesn't exist
-            toastElement = document.createElement("div");
-            toastElement.className = `broToastify-notification broToastify-${toast.type}`;
-            toastElement.setAttribute("data-id", toast.id);
-
-            if (newestOnTop) {
-              container.prepend(toastElement);
-            } else {
-              container.appendChild(toastElement);
-            }
-
-            activeToasts.set(toast.id, toastElement);
-          }
-
-          // Update the toast content
-          toastElement.innerHTML = `
-            <div class="broToastify-title">${toast.title || ""}</div>
-            <div class="broToastify-message">${toast.message}</div>
-            ${dismissible
-              ? `<button class="broToastify-close" aria-label="Close">&times;</button>`
-              : ""
-            }
-          `;
-
-          if (dismissible) {
-            const closeButton = toastElement.querySelector(".broToastify-close");
-            closeButton?.addEventListener("click", () => {
-              container.removeChild(toastElement!);
-              activeToasts.delete(toast.id);
-            });
-          }
-
-          if (toast.duration && toast.duration > 0) {
-            setTimeout(() => {
-              if (container.contains(toastElement!)) {
-                container.removeChild(toastElement!);
-                activeToasts.delete(toast.id);
-              }
-            }, toast.duration);
-          }
-        });
-
-        on("dismiss", (id: string) => {
-          const toastElement = activeToasts.get(id);
-          if (toastElement) {
-            container.removeChild(toastElement);
-            activeToasts.delete(id);
-          }
-        });
       }
-    }
+      containerRef.current = container as HTMLDivElement;
+
+      const updateContainerPosition = (newPosition: string) => {
+        if (containerRef.current) {
+          // Remove previous position classes
+          containerRef.current.className = `broToastify-container broToastify-${newPosition}`;
+          // Move existing toasts to the new container
+          activeToastsRef.current.forEach((toastElement) => {
+            if (containerRef.current && !containerRef.current.contains(toastElement)) {
+              if (newestOnTop) {
+                containerRef.current.prepend(toastElement);
+              } else {
+                containerRef.current.appendChild(toastElement);
+              }
+            }
+          });
+        }
+      };
+
+      const cleanupOldContainers = () => {
+        document.querySelectorAll('.broToastify-container').forEach((oldContainer) => {
+          if (oldContainer !== containerRef.current) {
+            oldContainer.remove();
+          }
+        });
+      };
+
+      const createHandler = (toast: BroToastify) => {
+        if (!containerRef.current) return;
+
+        let toastElement = activeToastsRef.current.get(toast.id);
+
+        if (!toastElement) {
+          toastElement = document.createElement('div');
+          toastElement.className = `broToastify-notification broToastify-${toast.type}`;
+          toastElement.setAttribute('data-id', toast.id);
+
+          if (newestOnTop) {
+            containerRef.current.prepend(toastElement);
+          } else {
+            containerRef.current.appendChild(toastElement);
+          }
+
+          activeToastsRef.current.set(toast.id, toastElement);
+        }
+
+        toastElement.innerHTML = `
+          <div class="broToastify-title">${toast.title || ''}</div>
+          <div class="broToastify-message">${toast.message}</div>
+          ${dismissible ? `<button class="broToastify-close" aria-label="Close">×</button>` : ''}
+        `;
+
+        if (dismissible) {
+          const closeButton = toastElement.querySelector('.broToastify-close');
+          closeButton?.addEventListener('click', () => {
+            if (containerRef.current && toastElement) {
+              containerRef.current.removeChild(toastElement);
+              activeToastsRef.current.delete(toast.id);
+            }
+          });
+        }
+
+        if (toast.duration && toast.duration > 0) {
+          setTimeout(() => {
+            if (containerRef.current && toastElement && containerRef.current.contains(toastElement)) {
+              containerRef.current.removeChild(toastElement);
+              activeToastsRef.current.delete(toast.id);
+            }
+          }, toast.duration);
+        }
+      };
+
+      const dismissHandler = (id: string) => {
+        const toastElement = activeToastsRef.current.get(id);
+        if (toastElement && containerRef.current && containerRef.current.contains(toastElement)) {
+          containerRef.current.removeChild(toastElement);
+          activeToastsRef.current.delete(id);
+        }
+      };
+
+      // Register event listeners
+      const createListener = on('create', createHandler);
+      const dismissListener = on('dismiss', dismissHandler);
+
+      // Update position if it changes
+      updateContainerPosition(position);
+      cleanupOldContainers();
+
+      return () => {
+        createListener();
+        dismissListener();
+        if (containerRef.current) {
+          containerRef.current.remove();
+          activeToastsRef.current.clear();
+        }
+      };
+    }, [position, newestOnTop, dismissible]);
     return null;
   };
 

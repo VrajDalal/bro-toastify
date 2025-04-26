@@ -2,7 +2,7 @@ import React from 'react';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export declare const ToastContainer: React.FC<{
     position?: BroToastifyToastifyOptions['position'];
-    newestOnTop?: boolean;
+    newestOnTop?: any;
     dismissible?: any;
 }>;
 export declare const broToastify: () => {
