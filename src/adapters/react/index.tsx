@@ -19,7 +19,7 @@ const ClientToastContainer: React.FC<{
       if (typeof window === 'undefined') return;
 
       // Create or update the container (fixed missing dot in selector)
-      let container = document.querySelector(`.broToastify-container.broToastify-${position}`);
+      let container = document.querySelector(`.broToastify-container broToastify-${position}`);
       if (!container) {
         container = document.createElement('div');
         container.className = `broToastify-container broToastify-${position}`;
@@ -135,11 +135,9 @@ export const ToastContainer: React.FC<{
   newestOnTop?: any;
   dismissible?: any;
 }> = (props) => {
-  // Only render ClientToastContainer on the client side
   if (typeof window === 'undefined') {
     return null;
   }
-
   return <ClientToastContainer {...props} />;
 };
 
