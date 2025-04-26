@@ -47,7 +47,7 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
     //Auto dismiss
     if (mergedOptions.duration && mergedOptions.duration > 0) {
         setTimeout(() => {
-            dismissBroTostify(id);
+            dismissBroToastify(id);
         }, mergedOptions.duration);
     }
 
@@ -55,7 +55,7 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
 }
 
 //dismiss broToastify
-export function dismissBroTostify(id: string): void {
+export function dismissBroToastify(id: string): void {
     const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id);
 
     if (BroToastify) {
@@ -78,7 +78,7 @@ export function dismissBroTostify(id: string): void {
 export function clearBroToastify(): void {
     const allBroToastifys = Array.from(broToastifys.values());
     allBroToastifys.forEach((BroToastify) => {
-        dismissBroTostify(BroToastify.id);
+        dismissBroToastify(BroToastify.id);
     })
 }
 
@@ -137,16 +137,20 @@ export const broToastify = {
         promise
             .then((result) => {
                 createBroToastify({ id, message: message.success, type: 'success', ...options });
-                dismissBroTostify(id)
+                dismissBroToastify(id)
                 return result
             })
             .catch((error) => {
                 createBroToastify({ id, message: message.error, type: 'error', ...options });
-                dismissBroTostify(id)
+                dismissBroToastify(id)
                 throw error
             });
     },
-    dismissible: dismissBroTostify,
+    isToastActive: (id: string): boolean => {
+        return !!Array.from(broToastifys.values()).find((toast) => toast.id === id);
+    },
+    dismiss: (id: string) => dismissBroToastify(id),
+    dismissible: (id: string) => dismissBroToastify(id),
     clearAll: clearBroToastify,
 }
 

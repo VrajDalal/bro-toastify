@@ -7,7 +7,7 @@ export declare const toast: {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    dismissible: typeof import("../../core/bro-toastify").dismissBroTostify;
+    dismissible: (id: string) => void;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };
 export declare const ToastContainer: {};

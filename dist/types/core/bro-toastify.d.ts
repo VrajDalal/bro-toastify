@@ -1,6 +1,6 @@
 import { BroToastify, BroToastifyToastifyOptions } from "./types";
 export declare function createBroToastify(options: BroToastifyToastifyOptions): BroToastify;
-export declare function dismissBroTostify(id: string): void;
+export declare function dismissBroToastify(id: string): void;
 export declare function clearBroToastify(): void;
 export declare function on(event: string, callback: Function): () => void;
 export declare const broToastify: {
@@ -15,6 +15,8 @@ export declare const broToastify: {
         success: string;
         error: string;
     }, options?: Partial<BroToastifyToastifyOptions>) => void;
-    dismissible: typeof dismissBroTostify;
+    isToastActive: (id: string) => boolean;
+    dismiss: (id: string) => void;
+    dismissible: (id: string) => void;
     clearAll: typeof clearBroToastify;
 };

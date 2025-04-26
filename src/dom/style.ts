@@ -53,6 +53,12 @@ export function getBroToastifyStyles(): string {
       color: white;
     }
 
+    .broToastify-loader-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem; /* Space between loader and message */
+    }   
+
     .broToastify-loader {
       border: 4px solid #f3f3f3;
       border-top: 4px solid #3498db;
@@ -62,13 +68,32 @@ export function getBroToastifyStyles(): string {
       animation: spin 1s linear infinite;
     }
 
+    .broToastify-loader-message {
+      font-size: 0.875rem;
+      color: #333;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Keyframes for loader spin */
     @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-        100% {
-            transform: rotate(360deg);
-        }
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Keyframes for message fade-in animation */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
     
     .broToastify-title {

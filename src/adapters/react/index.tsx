@@ -66,7 +66,10 @@ const ToastItem: React.FC<{ toast: BroToastify; dismissible: boolean }> = ({ toa
       {title && <div className="broToastify-title">{title}</div>}
       <div className="broToastify-message">
         {type === 'loading' ? (
-          <div className="broToastify-loader">Loading...</div> // Add loader animation
+          <div className="broToastify-loader-container">
+            <div className="broToastify-loader"></div>
+            <div className="broToastify-loader-message">{message}</div>
+          </div>
         ) : (
           message
         )}
@@ -101,6 +104,31 @@ export const broToastify = () => {
       coreToast.info(message, options),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
       coreToast.warning(message, options),
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => {
+      const toast = coreToast.loading(message, options);
+      return toast;
+    },
+    promises: (
+      promise: Promise<any>,
+      messages: { loading: string; success: string; error: string },
+      options?: Partial<BroToastifyToastifyOptions>
+    ) => {
+      const toast = coreToast.loading(messages.loading, options);
+
+      promise
+        .then((result) => {
+          coreToast.dismiss(toast.id); // Dismiss the loading toast
+          coreToast.success(messages.success, options); // Show success toast
+          return result;
+        })
+        .catch((error) => {
+          coreToast.dismiss(toast.id); // Dismiss the loading toast
+          coreToast.error(messages.error, options); // Show error toast
+          throw error;
+        });
+
+      return toast;
+    },
     dismiss: (id: string) => coreToast.dismissible(id),
     clearAll: coreToast.clearAll
   };
