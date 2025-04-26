@@ -209,7 +209,6 @@ export function injectStyles(): void {
   if (typeof window === 'undefined') {
     return; // Do nothing during SSR
   }
-  console.debug('injectStyles function called'); // Log when the function is called
 
   if (!document.getElementById('broToastify-styles')) {
     const style = document.createElement('style');

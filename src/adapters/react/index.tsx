@@ -12,52 +12,50 @@ export const ToastContainer: React.FC<{
   newestOnTop = true,
   dismissible
 }) => {
-    useEffect(() => {
-      const container = document.createElement("div");
-      container.className = `broToastify-container broToastify-${position}`;
-      document.body.appendChild(container);
+    if (typeof window !== "undefined") {
+      const container =
+        document.querySelector(`.broToastify-container.broToastify-${position}`) ||
+        document.createElement("div");
 
-      const handleCreate = (toast: BroToastify) => {
-        const toastElement = document.createElement("div");
-        toastElement.className = `broToastify-notification broToastify-${toast.type}`;
-        toastElement.innerHTML = `
-        <div class="broToastify-title">${toast.title || ""}</div>
-        <div class="broToastify-message">${toast.message}</div>
-        ${dismissible
-            ? `<button class="broToastify-close" aria-label="Close">&times;</button>`
-            : ""
-          }
-      `;
+      if (!container.parentElement) {
+        container.className = `broToastify-container broToastify-${position}`;
+        document.body.appendChild(container);
 
-        if (dismissible) {
-          const closeButton = toastElement.querySelector(".broToastify-close");
-          closeButton?.addEventListener("click", () => {
-            container.removeChild(toastElement);
-          });
-        }
-
-        if (toast.duration && toast.duration > 0) {
-          setTimeout(() => {
-            if (container.contains(toastElement)) {
-              container.removeChild(toastElement);
+        on("create", (toast: BroToastify) => {
+          const toastElement = document.createElement("div");
+          toastElement.className = `broToastify-notification broToastify-${toast.type}`;
+          toastElement.innerHTML = `
+          <div class="broToastify-title">${toast.title || ""}</div>
+          <div class="broToastify-message">${toast.message}</div>
+          ${dismissible
+              ? `<button class="broToastify-close" aria-label="Close">&times;</button>`
+              : ""
             }
-          }, toast.duration);
-        }
+        `;
 
-        if (newestOnTop) {
-          container.prepend(toastElement);
-        } else {
-          container.appendChild(toastElement);
-        }
-      };
+          if (dismissible) {
+            const closeButton = toastElement.querySelector(".broToastify-close");
+            closeButton?.addEventListener("click", () => {
+              container.removeChild(toastElement);
+            });
+          }
 
-      const unsubscribeCreate = on("create", handleCreate);
+          if (toast.duration && toast.duration > 0) {
+            setTimeout(() => {
+              if (container.contains(toastElement)) {
+                container.removeChild(toastElement);
+              }
+            }, toast.duration);
+          }
 
-      return () => {
-        unsubscribeCreate();
-        document.body.removeChild(container);
-      };
-    }, [position, newestOnTop, dismissible]);
+          if (newestOnTop) {
+            container.prepend(toastElement);
+          } else {
+            container.appendChild(toastElement);
+          }
+        });
+      }
+    }
 
     return null;
   };
