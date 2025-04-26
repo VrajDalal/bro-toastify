@@ -2,7 +2,10 @@ import { BroToastify, BroToastifyToastifyOptions } from "./types";
 import { createContainer, getContainer } from './container';
 import { injectStyles } from "../dom/style";
 
-injectStyles(); // Ensure styles are injected
+if (typeof window !== 'undefined') {
+    injectStyles();
+}
+
 //Default
 const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     type: 'default',
@@ -26,7 +29,11 @@ const generateId = () => {
 }
 
 //Create toast function
-export function createBroToastify(options: BroToastifyToastifyOptions): BroToastify {
+export function createBroToastify(options: BroToastifyToastifyOptions): BroToastify | undefined {
+    if (typeof window === 'undefined') {
+        return undefined; // Prevent toast creation during SSR
+    }
+
     const mergedOptions = { ...defaultOptions, ...options };
     const id = generateId();
 
@@ -67,15 +74,21 @@ export function dismissBroToastify(id: string): void {
         }
 
         // Remove the toast element from the DOM
-        const toastElement = document.getElementById(`broToastify-${id}`);
-        if (toastElement) {
-            toastElement.remove();
+        if (typeof window !== 'undefined') {
+            const toastElement = document.getElementById(`broToastify-${id}`);
+            if (toastElement) {
+                toastElement.remove();
+            }
         }
     }
 }
 
 //clear all broToastify
 export function clearBroToastify(): void {
+    if (typeof window === 'undefined') {
+        return; // Prevent execution during SSR
+    }
+
     const allBroToastifys = Array.from(broToastifys.values());
     allBroToastifys.forEach((BroToastify) => {
         dismissBroToastify(BroToastify.id);
@@ -84,7 +97,7 @@ export function clearBroToastify(): void {
 
 
 //subscribe to event
-export function on(event: string, callback: Function): () => void {
+export function on(event: string, callback: Function): { off: () => void } {
     if (!listeners.has(event)) {
         listeners.set(event, []);
     }
@@ -92,14 +105,16 @@ export function on(event: string, callback: Function): () => void {
     listeners.get(event)!.push(callback);
 
     //return unsubscribe function
-    return () => {
-        const callbacks = listeners.get(event);
-        if (callbacks) {
-            const index = callbacks.indexOf(callback);
-            if (index !== -1) {
-                callbacks.splice(index, 1);
+    return {
+        off: () => {
+            const callbacks = listeners.get(event);
+            if (callbacks) {
+                const index = callbacks.indexOf(callback);
+                if (index !== -1) {
+                    callbacks.splice(index, 1);
+                }
             }
-        }
+        },
     }
 }
 
@@ -130,6 +145,10 @@ export const broToastify = {
         message: { loading: string, success: string, error: string },
         options?: Partial<BroToastifyToastifyOptions>
     ) => {
+        if (typeof window === 'undefined') {
+            return undefined; // Prevent execution during SSR
+        }
+
         const id = generateId();
 
         createBroToastify({ id, message: message.loading, type: 'loading', ...options });
@@ -145,6 +164,7 @@ export const broToastify = {
                 dismissBroToastify(id)
                 throw error
             });
+        return { id };
     },
     isToastActive: (id: string): boolean => {
         return !!Array.from(broToastifys.values()).find((toast) => toast.id === id);

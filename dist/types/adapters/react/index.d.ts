@@ -2,36 +2,42 @@ import React from 'react';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export declare const ToastContainer: React.FC<{
     position?: BroToastifyToastifyOptions['position'];
-    newestOnTop?: boolean;
-    dismissible?: boolean;
+    newestOnTop?: any;
+    dismissible?: any;
 }>;
 export declare const broToastify: () => {
-    show: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    success: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
+    show: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
+    success: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
+    error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
+    info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
+    warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
     promises: (promise: Promise<any>, messages: {
         loading: string;
         success: string;
         error: string;
-    }, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
+    }, options?: Partial<BroToastifyToastifyOptions>) => {
+        id: string;
+    } | undefined;
+    isToastActive: (id: string) => boolean;
+    dismissible: (id: string) => void;
     dismiss: (id: string) => void;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };
 export declare const toast: {
-    show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    success: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    info: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    warning: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify;
+    show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
+    success: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
+    error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
+    info: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
+    warning: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
     promises: (promise: Promise<any>, message: {
         loading: string;
         success: string;
         error: string;
-    }, options?: Partial<BroToastifyToastifyOptions> | undefined) => void;
+    }, options?: Partial<BroToastifyToastifyOptions> | undefined) => {
+        id: string;
+    } | undefined;
     isToastActive: (id: string) => boolean;
     dismiss: (id: string) => void;
     dismissible: (id: string) => void;
