@@ -9,6 +9,12 @@ export declare const broToastify: {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify;
+    promises: (promise: Promise<any>, message: {
+        loading: string;
+        success: string;
+        error: string;
+    }, options?: Partial<BroToastifyToastifyOptions>) => void;
     dismissible: typeof dismissBroTostify;
     clearAll: typeof clearBroToastify;
 };

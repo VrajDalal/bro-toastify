@@ -71,9 +71,6 @@ export function dismissBroTostify(id: string): void {
         if (toastElement) {
             toastElement.remove();
         }
-
-        broToastifys.delete(id);
-        console.debug('Toast dismissed:', id);
     }
 }
 
@@ -126,7 +123,29 @@ export const broToastify = {
         createBroToastify({ message, type: 'info', ...options }),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
         createBroToastify({ message, type: 'warning', ...options }),
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+        createBroToastify({ message, type: 'loading', ...options }),
+    promises: (
+        promise: Promise<any>,
+        message: { loading: string, success: string, error: string },
+        options?: Partial<BroToastifyToastifyOptions>
+    ) => {
+        const id = generateId();
 
+        createBroToastify({ id, message: message.loading, type: 'loading', ...options });
+
+        promise
+            .then((result) => {
+                createBroToastify({ id, message: message.success, type: 'success', ...options });
+                dismissBroTostify(id)
+                return result
+            })
+            .catch((error) => {
+                createBroToastify({ id, message: message.error, type: 'error', ...options });
+                dismissBroTostify(id)
+                throw error
+            });
+    },
     dismissible: dismissBroTostify,
     clearAll: clearBroToastify,
 }

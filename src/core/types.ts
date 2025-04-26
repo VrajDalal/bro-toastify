@@ -1,6 +1,7 @@
 
 export interface BroToastifyToastifyOptions {
-    type?: 'show' | 'success' | 'error' | 'info' | 'warning' | 'default' | 'loading' | 'promises';
+    id?: string;
+    type?: 'show' | 'success' | 'error' | 'info' | 'warning' | 'default' | 'loading' | 'promises' | 'dismiss';
     message: string;
     title?: string;
     duration?: number;

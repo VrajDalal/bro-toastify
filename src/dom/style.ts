@@ -27,6 +27,11 @@ export function getBroToastifyStyles(): string {
       display: flex;
       flex-direction: column;
     }
+
+    .broToastify-default {
+      background-color:rgb(240, 241, 240);
+      color: white;
+    }
     
     .broToastify-success {
       background-color: #10B981;
@@ -46,6 +51,24 @@ export function getBroToastifyStyles(): string {
     .broToastify-warning {
       background-color: #F59E0B;
       color: white;
+    }
+
+    .broToastify-loader {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #3498db;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
     
     .broToastify-title {
