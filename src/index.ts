@@ -18,6 +18,6 @@
 
 
     // Also create a default export for convenience
-    // export { Toaster } from './adapters/react'; // Adjust the path if necessary
+    export { Toaster } from './adapters/react'; // Adjust the path if necessary
     import toast from './core/bro-toastify';
     export default toast;

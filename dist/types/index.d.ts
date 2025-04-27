@@ -6,5 +6,6 @@ import * as VanillaAdapter from './adapters/vanilla';
 export declare const React: typeof ReactAdapter;
 export declare const Angular: typeof AngularAdapter;
 export declare const Vanilla: typeof VanillaAdapter;
+export { Toaster } from './adapters/react';
 import toast from './core/bro-toastify';
 export default toast;
