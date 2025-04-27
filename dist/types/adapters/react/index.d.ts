@@ -1,5 +1,5 @@
 import React from 'react';
-import { toast } from '../../core/bro-toastify';
+import toast from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export declare const Toaster: React.FC<{
     position?: BroToastifyToastifyOptions['position'];
@@ -21,8 +21,8 @@ export declare const broToastify: () => {
         id: string;
     } | undefined;
     isToastActive: (id: string) => boolean;
-    dismissible: (id: string) => void;
     dismiss: (id: string) => void;
+    dismissible: (id: string) => void;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };
 export default toast;

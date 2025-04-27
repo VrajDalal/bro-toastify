@@ -90,8 +90,8 @@ export function clearBroToastify(): void {
     }
 
     const allBroToastifys = Array.from(broToastifys.values());
-    allBroToastifys.forEach((BroToastify) => {
-        dismissBroToastify(BroToastify.id);
+    allBroToastifys.forEach((broToastify) => {
+        dismissBroToastify(broToastify.id);
     })
 }
 
@@ -127,7 +127,7 @@ function emit(event: string, data: any): void {
 }
 
 //convenience methods
-export const toast = {
+const toast = {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
         createBroToastify({ message, type: 'show', ...options }),
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
@@ -173,5 +173,7 @@ export const toast = {
     dismissible: (id: string) => dismissBroToastify(id),
     clearAll: clearBroToastify,
 }
+
+export default toast;
 
 

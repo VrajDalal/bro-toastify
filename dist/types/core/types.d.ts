@@ -6,6 +6,7 @@ export interface BroToastifyToastifyOptions {
     duration?: number;
     position?: 'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center';
     dismissible?: boolean;
+    dismiss?: (id: string) => void;
     onClose?: () => void;
     onClick?: () => void;
     pauseOnHover?: boolean;

@@ -15,10 +15,9 @@ export const Vanilla = VanillaAdapter;
 // export const Vue = VueAdapter;
 // export const Svelte = SvelteAdapter;
 
-// Export toast as a named export
-export { toast } from './core/bro-toastify';
+
 
 // Also create a default export for convenience
 export { Toaster } from './adapters/react'; // Adjust the path if necessary
-import { toast } from './core/bro-toastify';
+import toast from './core/bro-toastify';
 export default toast;

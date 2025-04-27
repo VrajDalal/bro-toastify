@@ -13,6 +13,7 @@ export interface BroToastifyToastifyOptions {
     | 'bottom-right'
     | 'bottom-center';
     dismissible?: boolean;
+    dismiss?: (id: string) => void;
     onClose?: () => void;
     onClick?: () => void;
     pauseOnHover?: boolean;

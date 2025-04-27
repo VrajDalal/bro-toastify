@@ -19,7 +19,7 @@ export declare class ToastContainerComponent {
     ngOnDestroy(): void;
     handleDismiss(id: string): void;
 }
-export declare const toast: {
+export declare const angularToast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
     success: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
     error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;

@@ -5,8 +5,8 @@ import { injectStyles } from '../../dom/style';
  * @param options Default options for all toasts
  */
 export { injectStyles };
-export declare function init(options?: Partial<BroToastifyContainerOptions>): void;
-export declare const toast: {
+export declare function init(options?: Partial<BroToastifyContainerOptions>): () => void;
+export declare const vanilla: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
     success: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
     error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;

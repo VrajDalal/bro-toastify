@@ -1,5 +1,5 @@
 
-import { toast as coreToast, on } from '../../core/bro-toastify';
+import toast, { on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 
@@ -13,31 +13,31 @@ export class ToastService {
   }
 
   show(message: string, options?: Partial<BroToastifyToastifyOptions>) {
-    return coreToast.show(message, options);
+    return toast.show(message, options);
   }
 
   success(message: string, options?: Partial<BroToastifyToastifyOptions>) {
-    return coreToast.success(message, options);
+    return toast.success(message, options);
   }
 
   error(message: string, options?: Partial<BroToastifyToastifyOptions>) {
-    return coreToast.error(message, options);
+    return toast.error(message, options);
   }
 
   info(message: string, options?: Partial<BroToastifyToastifyOptions>) {
-    return coreToast.info(message, options);
+    return toast.info(message, options);
   }
 
   warning(message: string, options?: Partial<BroToastifyToastifyOptions>) {
-    return coreToast.warning(message, options);
+    return toast.warning(message, options);
   }
 
   dismiss(id: string) {
-    coreToast.dismissible(id);
+    toast.dismissible(id);
   }
 
   clearAll() {
-    coreToast.clearAll();
+    toast.clearAll();
   }
 }
 
@@ -86,4 +86,4 @@ export class ToastContainerComponent {
 }
 
 // Export the core toast for direct usage
-export const toast = coreToast;
+export const angularToast = toast;

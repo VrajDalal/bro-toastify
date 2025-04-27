@@ -5,33 +5,33 @@ export function createBroToastifyElement(broToastify: BroToastify): HTMLElement 
     const { id, type, message, title, dismissible, customClass } = broToastify;
 
     const broToastifyElement = document.createElement("div");
-    broToastifyElement.id = `bro-toastify-${id}`;
-    broToastifyElement.className = `bro-toastify-notification bro-toastify-${type} ${customClass || ""}`;
+    broToastifyElement.id = `broToastify-${id}`;
+    broToastifyElement.className = `broToastify-notification broToastify-${type} ${customClass || ""}`;
     broToastifyElement.setAttribute("role", "alert");
 
     //add title
     if (title) {
         const broToastifyTitleElement = document.createElement('div');
-        broToastifyTitleElement.className = 'bro-toastify-title';
+        broToastifyTitleElement.className = 'broToastify-title';
         broToastifyTitleElement.textContent = title;
         broToastifyElement.appendChild(broToastifyTitleElement);
     }
 
     //add message
     const broToastifyMessageElement = document.createElement('div');
-    broToastifyMessageElement.className = 'bro-toastify-message';
+    broToastifyMessageElement.className = 'broToastify-message';
     broToastifyMessageElement.textContent = message;
     broToastifyElement.appendChild(broToastifyMessageElement);
 
     // Add close button if dismissible
     if (dismissible) {
         const closeButton = document.createElement('button');
-        closeButton.className = 'bro-toastify-close';
+        closeButton.className = 'broToastify-close';
         closeButton.innerHTML = '&times;';
         closeButton.setAttribute('aria-label', 'Close');
         closeButton.onclick = () => {
             // This will be handled by the core
-            const event = new CustomEvent('bro-toastify:dismiss', { detail: { id } });
+            const event = new CustomEvent('broToastify:dismiss', { detail: { id } });
             document.dispatchEvent(event);
         };
         broToastifyElement.appendChild(closeButton);
@@ -41,7 +41,7 @@ export function createBroToastifyElement(broToastify: BroToastify): HTMLElement 
     if (broToastify.onClick) {
         broToastifyElement.addEventListener('click', (e) => {
             // Don't trigger if clicking the close button
-            if (!(e.target as HTMLElement).closest('.bro-toastify-close')) {
+            if (!(e.target as HTMLElement).closest('.broToastify-close')) {
                 broToastify.onClick!();
             }
         });

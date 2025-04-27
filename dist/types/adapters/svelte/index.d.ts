@@ -1,7 +1,7 @@
 /// <reference types="svelte" />
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 export declare const toasts: import("svelte/store").Writable<Map<string, BroToastify>>;
-export declare const toast: {
+export declare const toastify: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;

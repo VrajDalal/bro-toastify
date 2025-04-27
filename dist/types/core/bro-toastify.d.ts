@@ -5,7 +5,7 @@ export declare function clearBroToastify(): void;
 export declare function on(event: string, callback: Function): {
     off: () => void;
 };
-export declare const toast: {
+declare const toast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
@@ -24,3 +24,4 @@ export declare const toast: {
     dismissible: (id: string) => void;
     clearAll: typeof clearBroToastify;
 };
+export default toast;

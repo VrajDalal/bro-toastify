@@ -1,4 +1,4 @@
-import { toast as coreToast, on } from '../../core/bro-toastify';
+import toast, { on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 import { createBroToastifyElement } from '../../dom/renderer';
@@ -11,17 +11,19 @@ import { getContainer } from '../../core/container';
 
 export { injectStyles }
 
-export function init(options?: Partial<BroToastifyContainerOptions>): void {
+export function init(options?: Partial<BroToastifyContainerOptions>): () => void {
     // Inject styles
-    injectStyles();
+    if (typeof window !== 'undefined') {
+        injectStyles();
+    }
 
     // Set default options if provided
     if (options) {
-        Object.assign(coreToast, { defaultOptions: options });
+        Object.assign(toast, { defaultOptions: options });
     }
 
     // Subscribe to toast events
-    on('create', (toast: BroToastify) => {
+    const createListener = on('create', (toast: BroToastify) => {
         const container = getContainer(toast.position);
         const toastElement = createBroToastifyElement(toast);
 
@@ -33,22 +35,33 @@ export function init(options?: Partial<BroToastifyContainerOptions>): void {
         }
 
         // Set up dismiss event listener
-        document.addEventListener('toast:dismiss', (e: any) => {
+        const handleDismiss = (e: CustomEvent) => {
             if (e.detail.id === toast.id) {
-                coreToast.dismissible(toast.id);
+                toast.dismiss?.(toast.id);
                 toastElement.remove();
             }
-        });
+        };
+        document.addEventListener('toast:dismiss', handleDismiss as EventListener);
 
         // Auto dismiss
         if (toast.duration && toast.duration > 0) {
             setTimeout(() => {
-                coreToast.dismissible(toast.id);
+                toast.dismiss?.(toast.id); // Use dismiss method
                 toastElement.remove();
             }, toast.duration);
         }
+
+        const cleanup = () => {
+            document.removeEventListener('toast:dismiss', handleDismiss as EventListener);
+        };
+        toastElement.addEventListener('remove', cleanup, { once: true });
     });
+
+    // Cleanup on module unload (optional, if needed)
+    return () => {
+        createListener.off();
+    };
 }
 
 // Export the core toast for direct usage
-export const toast = coreToast;
+export const vanilla = toast;

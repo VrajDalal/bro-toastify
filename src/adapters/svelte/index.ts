@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { toast as coreToast, on } from '../../core/bro-toastify';
+import toast, { on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 
@@ -35,25 +35,25 @@ function setupToastStore() {
 setupToastStore();
 
 // Toast functions for Svelte
-export const toast = {
+export const toastify = {
 
   show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-    coreToast.show(message, options),
+    toast.show(message, options),
 
   success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-    coreToast.success(message, options),
+    toast.success(message, options),
 
   error: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-    coreToast.error(message, options),
+    toast.error(message, options),
 
   info: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-    coreToast.info(message, options),
+    toast.info(message, options),
 
   warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-    coreToast.warning(message, options),
+    toast.warning(message, options),
 
-  dismissible: coreToast.dismissible,
-  clearAll: coreToast.clearAll
+  dismissible: toast.dismissible,
+  clearAll: toast.clearAll
 };
 
 // Export ToastContainer component (would be a .svelte file in a real implementation)

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { toast, on } from '../../core/bro-toastify';
+import toast, { on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
 // Client-only ToastContainer implementation
@@ -19,7 +19,7 @@ const ClientToastContainer: React.FC<{
       if (typeof window === 'undefined') return;
 
       // Create or update the container (fixed missing dot in selector)
-      let container = document.querySelector(`.broToastify-container broToastify-${position}`);
+      let container = document.querySelector(`.broToastify-container.broToastify-${position}`);
       if (!container) {
         container = document.createElement('div');
         container.className = `broToastify-container broToastify-${position}`;
@@ -164,8 +164,8 @@ export const broToastify = () => {
       options?: Partial<BroToastifyToastifyOptions>
     ) => toast.promises(promise, messages, options),
     isToastActive: (id: string) => toast.isToastActive(id),
-    dismissible: (id: string) => toast.dismissible(id),
     dismiss: (id: string) => toast.dismissible(id),
+    dismissible: (id: string) => toast.dismissible(id),
     clearAll: toast.clearAll,
   };
 };
