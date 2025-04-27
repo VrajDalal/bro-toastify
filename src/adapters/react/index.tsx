@@ -20,7 +20,7 @@ const toastManager = (() => {
     initialized = true;
 
     // Create or update container
-    container = document.querySelector(`.broToastify-container broToastify-${position}`);
+    container = document.querySelector(`.broToastify-container.broToastify-${position}`);
     if (!container) {
       container = document.createElement('div');
       container.className = `broToastify-container broToastify-${position}`;
@@ -156,23 +156,37 @@ const toastManager = (() => {
   return { init, cleanup };
 })();
 
+// Client-side initialization script
+if (typeof window !== 'undefined') {
+  // Run initialization in a microtask to ensure DOM is ready
+  queueMicrotask(() => {
+    console.log('Running client-side Toaster initialization'); // Debug log
+    // Check if Toaster was rendered (position stored in global)
+    const toasterConfig = (window as any).__BRO_TOASTER_CONFIG;
+    if (toasterConfig) {
+      console.log('Found Toaster config, initializing:', toasterConfig); // Debug log
+      toastManager.cleanup();
+      toastManager.init(toasterConfig.position, toasterConfig.newestOnTop, toasterConfig.dismissible);
+    } else {
+      console.warn('No Toaster config found, initialization skipped');
+    }
+  });
+}
+
 // Server-safe Toaster component
 export const Toaster: React.FC<{
   position?: BroToastifyToastifyOptions['position'];
   newestOnTop?: boolean;
   dismissible?: boolean;
 }> = ({ position = 'top-right', newestOnTop = true, dismissible = true }) => {
-  // Initialize toast manager on client-side
+  // Store config for client-side initialization
   if (typeof window !== 'undefined') {
     try {
-      toastManager.cleanup(); // Ensure no duplicate managers
-      toastManager.init(position, newestOnTop, dismissible);
-      console.log('Toaster component initialized toastManager'); // Debug log
+      console.log('Toaster component storing config:', { position, newestOnTop, dismissible }); // Debug log
+      (window as any).__BRO_TOASTER_CONFIG = { position, newestOnTop, dismissible };
     } catch (error) {
-      console.error('Failed to initialize toastManager:', error);
+      console.error('Failed to store Toaster config:', error);
     }
-  } else {
-    console.log('Toaster component skipped initialization (SSR)'); // Debug log
   }
 
   // Render a hidden placeholder to avoid hydration issues
