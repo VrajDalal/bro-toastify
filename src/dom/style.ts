@@ -1,6 +1,5 @@
 import { getAnimationKeyframes } from '../core/animation';
 
-
 export function getBroToastifyStyles(): string {
   return `
     .broToastify-container {
@@ -12,7 +11,7 @@ export function getBroToastifyStyles(): string {
       max-width: 100%;
       max-height: 100vh;
       overflow-y: auto;
-      pointer-events: none;
+      padding: 1rem;
     }
     
     .broToastify-notification {
@@ -23,14 +22,15 @@ export function getBroToastifyStyles(): string {
       border-radius: 0.375rem;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       overflow: hidden;
-      pointer-events: auto;
       display: flex;
       flex-direction: column;
+      opacity: 1 !important;
+      visibility: visible !important;
     }
 
     .broToastify-default {
-      background-color:rgb(240, 241, 240);
-      color: white;
+      background-color: rgb(240, 241, 240);
+      color: #333;
     }
     
     .broToastify-success {
@@ -56,7 +56,7 @@ export function getBroToastifyStyles(): string {
     .broToastify-loader-container {
       display: flex;
       align-items: center;
-      gap: 0.5rem; /* Space between loader and message */
+      gap: 0.5rem;
     }   
 
     .broToastify-loader {
@@ -71,34 +71,23 @@ export function getBroToastifyStyles(): string {
     .broToastify-loader-message {
       font-size: 0.875rem;
       color: #333;
-      animation: fadeIn 1s ease-in-out;
+      animation: fadeIn 0.3s ease-in-out;
     }
 
-    /* Keyframes for loader spin */
     @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
-    /* Keyframes for message fade-in animation */
     @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
     
     .broToastify-title {
       font-weight: bold;
       margin-bottom: 0.25rem;
+      font-size: 1rem;
     }
     
     .broToastify-message {
@@ -120,15 +109,8 @@ export function getBroToastifyStyles(): string {
     
     .broToastify-close:hover {
       opacity: 1;
-      cursor: pointer;
     }
     
-    
-    .broToastify-paused .broToastify-progress {
-      animation-play-state: paused;
-    }
-    
-    /* Position-specific styles */
     .broToastify-top-right {
       top: 1rem;
       right: 1rem;
@@ -167,12 +149,10 @@ export function getBroToastifyStyles(): string {
       align-items: center;
     }
     
-    /* Animation keyframes */
     ${getAnimationKeyframes('fade')}
     ${getAnimationKeyframes('slide', 'top')}
     ${getAnimationKeyframes('zoom')}
     
-    /* Responsive styles */
     @media (max-width: 576px) {
       .broToastify-container {
         width: 100%;
@@ -205,25 +185,24 @@ export function getBroToastifyStyles(): string {
   `;
 }
 
-let stylesInjected = false; // Flag to track if styles are injected
+let stylesInjected = false;
 
 export function injectStyles() {
-  // Ensure this runs only on the client side
   if (typeof window === 'undefined' || typeof document === 'undefined') {
-    console.warn('injectStyles called on the server. Skipping style injection.');
+    console.log('injectStyles skipped: server-side');
     return;
   }
 
-  if (stylesInjected) return; // Prevent repeated execution
+  if (stylesInjected) {
+    console.log('injectStyles skipped: already injected');
+    return;
+  }
+
   stylesInjected = true;
 
-  if (!document.getElementById('broToastify-styles')) {
-    const style = document.createElement('style');
-    style.id = 'broToastify-styles';
-    style.innerHTML = getBroToastifyStyles();
-    document.head.appendChild(style);
-    console.debug('Styles injected successfully.');
-  } else {
-    console.debug('Styles are already injected.');
-  }
+  const style = document.createElement('style');
+  style.id = 'broToastify-styles';
+  style.innerHTML = getBroToastifyStyles();
+  document.head.appendChild(style);
+  console.log('injectStyles: styles injected successfully');
 }
