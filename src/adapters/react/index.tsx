@@ -11,31 +11,43 @@ const toastManager = (() => {
   let initialized = false;
 
   const init = (position: string, newestOnTop: boolean, dismissible: boolean) => {
-    if (typeof window === 'undefined' || initialized) return;
+    if (typeof window === 'undefined' || initialized) {
+      console.log('ToastManager init skipped:', { isServer: typeof window === 'undefined', initialized });
+      return;
+    }
 
     console.log('ToastManager initializing, position:', position); // Debug log
     initialized = true;
 
     // Create or update container
-    container = document.querySelector(`.broToastify-container.broToastify-${position}`);
+    container = document.querySelector(`.broToastify-container broToastify-${position}`);
     if (!container) {
       container = document.createElement('div');
       container.className = `broToastify-container broToastify-${position}`;
       document.body.appendChild(container);
       console.log('Created container:', container); // Debug log
+    } else {
+      console.log('Found existing container:', container); // Debug log
+    }
+
+    // Verify container is in DOM
+    if (!document.body.contains(container)) {
+      document.body.appendChild(container);
+      console.log('Re-appended container to body:', container); // Debug log
     }
 
     // Clean up old containers
     document.querySelectorAll('.broToastify-container').forEach((oldContainer) => {
       if (oldContainer !== container) {
         oldContainer.remove();
+        console.log('Removed old container:', oldContainer); // Debug log
       }
     });
 
     // Handle create event
     const createHandler = (toast: BroToastify) => {
       if (!container || !toast) {
-        console.error('No container or invalid toast:', { container, toast });
+        console.error('Cannot create toast: missing container or toast', { container, toast });
         return;
       }
 
@@ -49,32 +61,49 @@ const toastManager = (() => {
         toastElement.className = `broToastify-notification broToastify-${toast.type}`;
         toastElement.setAttribute('data-id', toast.id);
 
-        if (newestOnTop) {
-          container.prepend(toastElement);
-        } else {
-          container.appendChild(toastElement);
+        try {
+          if (newestOnTop) {
+            container.prepend(toastElement);
+          } else {
+            container.appendChild(toastElement);
+          }
+          console.log('Created and appended toast element:', toastElement); // Debug log
+        } catch (error) {
+          console.error('Failed to append toast element:', error);
+          return;
         }
 
         activeToasts.set(toast.id, toastElement);
-        console.log('Created toast element:', toastElement); // Debug log
+      } else {
+        console.log('Toast element already exists:', toastElement); // Debug log
       }
 
-      toastElement.innerHTML = `
-        <div class="broToastify-title">${toast.title || ''}</div>
-        <div class="broToastify-message">${toast.message}</div>
-        ${dismissible ? `<button class="broToastify-close" aria-label="Close">×</button>` : ''}
-      `;
+      try {
+        toastElement.innerHTML = `
+          <div class="broToastify-title">${toast.title || ''}</div>
+          <div class="broToastify-message">${toast.message}</div>
+          ${dismissible ? `<button class="broToastify-close" aria-label="Close">×</button>` : ''}
+        `;
+        console.log('Updated toast element HTML:', toastElement); // Debug log
+      } catch (error) {
+        console.error('Failed to update toast HTML:', error);
+      }
 
       if (dismissible) {
         const closeButton = toastElement.querySelector('.broToastify-close');
-        closeButton?.addEventListener('click', () => {
-          if (container && toastElement) {
-            container.removeChild(toastElement);
-            activeToasts.delete(toast.id);
-            coreToast.dismiss(toast.id);
-            console.log('Dismissed toast:', toast.id); // Debug log
-          }
-        });
+        if (closeButton) {
+          closeButton.addEventListener('click', () => {
+            if (container && toastElement) {
+              container.removeChild(toastElement);
+              activeToasts.delete(toast.id);
+              coreToast.dismiss(toast.id);
+              console.log('Dismissed toast:', toast.id); // Debug log
+            }
+          });
+          console.log('Added close button listener for toast:', toast.id); // Debug log
+        } else {
+          console.warn('Close button not found for toast:', toast.id);
+        }
       }
 
       // Auto-dismiss
@@ -96,12 +125,19 @@ const toastManager = (() => {
         container.removeChild(toastElement);
         activeToasts.delete(id);
         console.log('Handled dismiss event for toast:', id); // Debug log
+      } else {
+        console.warn('Dismiss event for non-existent toast:', id);
       }
     };
 
     // Register listeners
-    createListener = on('create', createHandler);
-    dismissListener = on('dismiss', dismissHandler);
+    try {
+      createListener = on('create', createHandler);
+      dismissListener = on('dismiss', dismissHandler);
+      console.log('Registered create and dismiss listeners'); // Debug log
+    } catch (error) {
+      console.error('Failed to register listeners:', error);
+    }
   };
 
   const cleanup = () => {
@@ -128,8 +164,15 @@ export const Toaster: React.FC<{
 }> = ({ position = 'top-right', newestOnTop = true, dismissible = true }) => {
   // Initialize toast manager on client-side
   if (typeof window !== 'undefined') {
-    toastManager.cleanup(); // Ensure no duplicate managers
-    toastManager.init(position, newestOnTop, dismissible);
+    try {
+      toastManager.cleanup(); // Ensure no duplicate managers
+      toastManager.init(position, newestOnTop, dismissible);
+      console.log('Toaster component initialized toastManager'); // Debug log
+    } catch (error) {
+      console.error('Failed to initialize toastManager:', error);
+    }
+  } else {
+    console.log('Toaster component skipped initialization (SSR)'); // Debug log
   }
 
   // Render a hidden placeholder to avoid hydration issues
@@ -158,7 +201,7 @@ export const broToastify = () => {
     ) => coreToast.promises(promise, messages, options),
     isToastActive: (id: string) => coreToast.isToastActive(id),
     dismiss: (id: string) => coreToast.dismiss(id),
-    dismissible: (id: string) => coreToast.dismissible(id),
+    dismissible: (id: string) => coreToast.dismiss(id),
     clearAll: () => coreToast.clearAll(),
   };
 };
