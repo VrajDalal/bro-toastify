@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { broToastify as coreToast, on } from '../../core/bro-toastify';
+import { toast as coreToast, on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 

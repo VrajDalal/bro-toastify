@@ -16,9 +16,9 @@ export const Vanilla = VanillaAdapter;
 // export const Svelte = SvelteAdapter;
 
 // Export toast as a named export
-export { broToastify } from './core/bro-toastify';
+export { toast } from './core/bro-toastify';
 
 // Also create a default export for convenience
-export { ToastContainer } from './adapters/react'; // Adjust the path if necessary
-import { broToastify } from './core/bro-toastify';
-export default broToastify;
+export { Toaster } from './adapters/react'; // Adjust the path if necessary
+import { toast } from './core/bro-toastify';
+export default toast;

@@ -1,5 +1,5 @@
 
-import { broToastify as coreToast, on } from '../../core/bro-toastify';
+import { toast as coreToast, on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 
@@ -52,7 +52,7 @@ export class ToastContainerComponent {
 
   ngOnInit() {
     // Subscribe to toast events
-    this.createUnsubscribe = on('create', (toast: BroToastify) => {
+    const createSubscription = on('create', (toast: BroToastify) => {
       if (toast.position === this.position) {
         if (this.newestOnTop) {
           this.toasts = [toast, ...this.toasts];
@@ -61,10 +61,12 @@ export class ToastContainerComponent {
         }
       }
     });
+    this.createUnsubscribe = createSubscription.off;
 
-    this.dismissUnsubscribe = on('dismiss', (toast: BroToastify) => {
+    const dismissSubscription = on('dismiss', (toast: BroToastify) => {
       this.toasts = this.toasts.filter(t => t.id !== toast.id);
     });
+    this.dismissUnsubscribe = dismissSubscription.off;
   }
 
   ngOnDestroy() {
@@ -79,7 +81,7 @@ export class ToastContainerComponent {
   }
 
   handleDismiss(id: string) {
-    coreToast.dismissible(id);
+    toast.dismissible(id);
   }
 }
 

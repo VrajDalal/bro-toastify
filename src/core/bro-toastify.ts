@@ -127,7 +127,7 @@ function emit(event: string, data: any): void {
 }
 
 //convenience methods
-export const broToastify = {
+export const toast = {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
         createBroToastify({ message, type: 'show', ...options }),
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>

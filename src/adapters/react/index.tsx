@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { broToastify as coreToast, on } from '../../core/bro-toastify';
+import { toast, on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
 // Client-only ToastContainer implementation
@@ -52,16 +52,16 @@ const ClientToastContainer: React.FC<{
         });
       };
 
-      const createHandler = (toast: BroToastify) => {
+      const createHandler = (toasts: BroToastify) => {
         if (!containerRef.current || !toast) return;
 
-        let toastElement = activeToastsRef.current.get(toast.id);
+        let toastElement = activeToastsRef.current.get(toasts.id);
 
         if (!toastElement) {
           toastElement = document.createElement('div');
-          toastElement.id = `broToastify-${toast.id}`; // Match ID used in dismissBroToastify
-          toastElement.className = `broToastify-notification broToastify-${toast.type}`;
-          toastElement.setAttribute('data-id', toast.id);
+          toastElement.id = `broToastify-${toasts.id}`; // Match ID used in dismissBroToastify
+          toastElement.className = `broToastify-notification broToastify-${toasts.type}`;
+          toastElement.setAttribute('data-id', toasts.id);
 
           if (newestOnTop) {
             containerRef.current.prepend(toastElement);
@@ -69,12 +69,12 @@ const ClientToastContainer: React.FC<{
             containerRef.current.appendChild(toastElement);
           }
 
-          activeToastsRef.current.set(toast.id, toastElement);
+          activeToastsRef.current.set(toasts.id, toastElement);
         }
 
         toastElement.innerHTML = `
-        <div class="broToastify-title">${toast.title || ''}</div>
-        <div class="broToastify-message">${toast.message}</div>
+        <div class="broToastify-title">${toasts.title || ''}</div>
+        <div class="broToastify-message">${toasts.message}</div>
         ${dismissible ? `<button class="broToastify-close" aria-label="Close">×</button>` : ''}
       `;
 
@@ -83,19 +83,19 @@ const ClientToastContainer: React.FC<{
           closeButton?.addEventListener('click', () => {
             if (containerRef.current && toastElement) {
               containerRef.current.removeChild(toastElement);
-              activeToastsRef.current.delete(toast.id);
-              coreToast.dismiss(toast.id);
+              activeToastsRef.current.delete(toasts.id);
+              toast.dismiss(toasts.id);
             }
           });
         }
 
-        if (toast.duration && toast.duration > 0) {
+        if (toasts.duration && toasts.duration > 0) {
           setTimeout(() => {
             if (containerRef.current && toastElement && containerRef.current.contains(toastElement)) {
               containerRef.current.removeChild(toastElement);
-              activeToastsRef.current.delete(toast.id);
+              activeToastsRef.current.delete(toasts.id);
             }
-          }, toast.duration);
+          }, toasts.duration);
         }
       };
 
@@ -130,7 +130,7 @@ const ClientToastContainer: React.FC<{
   };
 
 // Server-safe ToastContainer wrapper
-export const ToastContainer: React.FC<{
+export const Toaster: React.FC<{
   position?: BroToastifyToastifyOptions['position'];
   newestOnTop?: any;
   dismissible?: any;
@@ -145,30 +145,30 @@ export const ToastContainer: React.FC<{
 export const broToastify = () => {
   return {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.show(message, options),
+      toast.show(message, options),
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.success(message, options),
+      toast.success(message, options),
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.error(message, options),
+      toast.error(message, options),
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.info(message, options),
+      toast.info(message, options),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.warning(message, options),
+      toast.warning(message, options),
     loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => {
-      const toast = coreToast.loading(message, options);
-      return toast;
+      const toasts = toast.loading(message, options);
+      return toasts;
     },
     promises: (
       promise: Promise<any>,
       messages: { loading: string; success: string; error: string },
       options?: Partial<BroToastifyToastifyOptions>
-    ) => coreToast.promises(promise, messages, options),
-    isToastActive: (id: string) => coreToast.isToastActive(id),
-    dismissible: (id: string) => coreToast.dismissible(id),
-    dismiss: (id: string) => coreToast.dismissible(id),
-    clearAll: coreToast.clearAll,
+    ) => toast.promises(promise, messages, options),
+    isToastActive: (id: string) => toast.isToastActive(id),
+    dismissible: (id: string) => toast.dismissible(id),
+    dismiss: (id: string) => toast.dismissible(id),
+    clearAll: toast.clearAll,
   };
 };
 
 // Export the core toast for direct usage
-export const toast = coreToast;
+export default toast;

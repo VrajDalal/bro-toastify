@@ -1,4 +1,4 @@
-import { broToastify as coreToast, on } from '../../core/bro-toastify';
+import { toast as coreToast, on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 import { createBroToastifyElement } from '../../dom/renderer';
