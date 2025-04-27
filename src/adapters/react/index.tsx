@@ -6,7 +6,6 @@ import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 const toastManager = (() => {
   let container: HTMLDivElement | null = null;
   let activeToasts: Map<string, HTMLElement> = new Map();
-  let dismissedToasts: Set<string> = new Set(); // Track dismissed toasts
   let createListener: { off: () => void } | null = null;
   let dismissListener: { off: () => void } | null = null;
   let initialized = false;
@@ -17,7 +16,7 @@ const toastManager = (() => {
       return;
     }
 
-    console.log('ToastManager initializing, position:', position);
+    console.log('ToastManager initializing, position:', position); // Debug log
     initialized = true;
 
     // Create or update container
@@ -26,22 +25,22 @@ const toastManager = (() => {
       container = document.createElement('div');
       container.className = `broToastify-container broToastify-${position}`;
       document.body.appendChild(container);
-      console.log('Created container:', container);
+      console.log('Created container:', container); // Debug log
     } else {
-      console.log('Found existing container:', container);
+      console.log('Found existing container:', container); // Debug log
     }
 
     // Verify container is in DOM
     if (!document.body.contains(container)) {
       document.body.appendChild(container);
-      console.log('Re-appended container to body:', container);
+      console.log('Re-appended container to body:', container); // Debug log
     }
 
     // Clean up old containers
     document.querySelectorAll('.broToastify-container').forEach((oldContainer) => {
       if (oldContainer !== container) {
         oldContainer.remove();
-        console.log('Removed old container:', oldContainer);
+        console.log('Removed old container:', oldContainer); // Debug log
       }
     });
 
@@ -52,7 +51,7 @@ const toastManager = (() => {
         return;
       }
 
-      console.log('Received create event for toast:', toast);
+      console.log('Received create event for toast:', toast); // Debug log
 
       let toastElement = activeToasts.get(toast.id);
 
@@ -68,7 +67,7 @@ const toastManager = (() => {
           } else {
             container.appendChild(toastElement);
           }
-          console.log('Created and appended toast element:', toastElement);
+          console.log('Created and appended toast element:', toastElement); // Debug log
         } catch (error) {
           console.error('Failed to append toast element:', error);
           return;
@@ -76,7 +75,7 @@ const toastManager = (() => {
 
         activeToasts.set(toast.id, toastElement);
       } else {
-        console.log('Toast element already exists:', toastElement);
+        console.log('Toast element already exists:', toastElement); // Debug log
       }
 
       try {
@@ -85,7 +84,7 @@ const toastManager = (() => {
           <div class="broToastify-message">${toast.message}</div>
           ${dismissible ? `<button class="broToastify-close" aria-label="Close">×</button>` : ''}
         `;
-        console.log('Updated toast element HTML:', toastElement);
+        console.log('Updated toast element HTML:', toastElement); // Debug log
       } catch (error) {
         console.error('Failed to update toast HTML:', error);
       }
@@ -97,12 +96,11 @@ const toastManager = (() => {
             if (container && toastElement) {
               container.removeChild(toastElement);
               activeToasts.delete(toast.id);
-              dismissedToasts.add(toast.id); // Mark as dismissed
               coreToast.dismiss(toast.id);
-              console.log('Dismissed toast:', toast.id);
+              console.log('Dismissed toast:', toast.id); // Debug log
             }
           });
-          console.log('Added close button listener for toast:', toast.id);
+          console.log('Added close button listener for toast:', toast.id); // Debug log
         } else {
           console.warn('Close button not found for toast:', toast.id);
         }
@@ -114,9 +112,7 @@ const toastManager = (() => {
           if (container && toastElement && container.contains(toastElement)) {
             container.removeChild(toastElement);
             activeToasts.delete(toast.id);
-            dismissedToasts.add(toast.id); // Mark as dismissed
-            coreToast.dismiss(toast.id);
-            console.log('Auto-dismissed toast:', toast.id);
+            console.log('Auto-dismissed toast:', toast.id); // Debug log
           }
         }, toast.duration);
       }
@@ -124,19 +120,13 @@ const toastManager = (() => {
 
     // Handle dismiss event
     const dismissHandler = (id: string) => {
-      if (dismissedToasts.has(id)) {
-        console.log('Ignoring dismiss event for already dismissed toast:', id);
-        return;
-      }
-
       const toastElement = activeToasts.get(id);
       if (toastElement && container && container.contains(toastElement)) {
         container.removeChild(toastElement);
         activeToasts.delete(id);
-        dismissedToasts.add(id);
-        console.log('Handled dismiss event for toast:', id);
+        console.log('Handled dismiss event for toast:', id); // Debug log
       } else {
-        console.log('Dismiss event for non-existent toast:', id);
+        console.warn('Dismiss event for non-existent toast:', id);
       }
     };
 
@@ -144,7 +134,7 @@ const toastManager = (() => {
     try {
       createListener = on('create', createHandler);
       dismissListener = on('dismiss', dismissHandler);
-      console.log('Registered create and dismiss listeners');
+      console.log('Registered create and dismiss listeners'); // Debug log
     } catch (error) {
       console.error('Failed to register listeners:', error);
     }
@@ -152,13 +142,12 @@ const toastManager = (() => {
 
   const cleanup = () => {
     if (typeof window === 'undefined') return;
-    console.log('ToastManager cleaning up');
+    console.log('ToastManager cleaning up'); // Debug log
     createListener?.off();
     dismissListener?.off();
     if (container) {
       container.remove();
       activeToasts.clear();
-      dismissedToasts.clear();
       container = null;
     }
     initialized = false;
@@ -167,24 +156,41 @@ const toastManager = (() => {
   return { init, cleanup };
 })();
 
-// Toaster component
+// Client-side initialization script
+if (typeof window !== 'undefined') {
+  // Delay initialization to ensure DOM and Toaster render are complete
+  setTimeout(() => {
+    console.log('Running client-side Toaster initialization'); // Debug log
+    const toasterConfig = (window as any).__BRO_TOASTER_CONFIG || {
+      position: 'top-right',
+      newestOnTop: true,
+      dismissible: true,
+    };
+    console.log('Toaster config:', toasterConfig); // Debug log
+    toastManager.cleanup();
+    toastManager.init(toasterConfig.position, toasterConfig.newestOnTop, toasterConfig.dismissible);
+  }, 0);
+}
+
+// Server-safe Toaster component
 export const Toaster: React.FC<{
   position?: BroToastifyToastifyOptions['position'];
   newestOnTop?: boolean;
   dismissible?: boolean;
 }> = ({ position = 'top-right', newestOnTop = true, dismissible = true }) => {
-  React.useEffect(() => {
-    console.log('Toaster useEffect running, initializing with:', { position, newestOnTop, dismissible });
-    toastManager.cleanup();
-    toastManager.init(position, newestOnTop, dismissible);
+  // Store config for client-side initialization
+  if (typeof window !== 'undefined') {
+    try {
+      console.log('Toaster component storing config:', { position, newestOnTop, dismissible }); // Debug log
+      (window as any).__BRO_TOASTER_CONFIG = { position, newestOnTop, dismissible };
+    } catch (error) {
+      console.error('Failed to store Toaster config:', error);
+    }
+  } else {
+    console.log('Toaster component running in SSR'); // Debug log
+  }
 
-    return () => {
-      console.log('Toaster useEffect cleanup');
-      toastManager.cleanup();
-    };
-  }, [position, newestOnTop, dismissible]);
-
-  // Render a hidden placeholder
+  // Render a hidden placeholder to avoid hydration issues
   return <div className={`broToastify-container broToastify-${position}`} style={{ display: 'none' }} />;
 };
 
@@ -192,22 +198,22 @@ export const Toaster: React.FC<{
 export const broToastify = () => {
   return {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.show(message, { ...options, duration: options?.duration ?? 5000 }), // Increase default duration
+      coreToast.show(message, options),
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.success(message, { ...options, duration: options?.duration ?? 5000 }),
+      coreToast.success(message, options),
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.error(message, { ...options, duration: options?.duration ?? 5000 }),
+      coreToast.error(message, options),
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.info(message, { ...options, duration: options?.duration ?? 5000 }),
+      coreToast.info(message, options),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.warning(message, { ...options, duration: options?.duration ?? 5000 }),
+      coreToast.warning(message, options),
     loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      coreToast.loading(message, { ...options, duration: options?.duration ?? 5000 }),
+      coreToast.loading(message, options),
     promises: (
       promise: Promise<any>,
       messages: { loading: string; success: string; error: string },
       options?: Partial<BroToastifyToastifyOptions>
-    ) => coreToast.promises(promise, messages, { ...options, duration: options?.duration ?? 5000 }),
+    ) => coreToast.promises(promise, messages, options),
     isToastActive: (id: string) => coreToast.isToastActive(id),
     dismiss: (id: string) => coreToast.dismiss(id),
     dismissible: (id: string) => coreToast.dismiss(id),
