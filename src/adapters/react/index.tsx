@@ -1,181 +1,167 @@
-import React, { useEffect, useRef } from 'react';
-import toast, { on } from '../../core/bro-toastify';
+import React from 'react';
+import coreToast, { on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
-// Client-only ToastContainer implementation
-const ClientToastContainer: React.FC<{
-  position?: BroToastifyToastifyOptions['position'];
-  newestOnTop?: any;
-  dismissible?: any;
-}> = ({
-  position = 'top-right',
-  newestOnTop,
-  dismissible,
-}) => {
-    if (typeof window === "undefined") {
-      // If running on the server, return null to avoid rendering
-      return null;
+// Global singleton to manage toast rendering
+const toastManager = (() => {
+  let container: HTMLDivElement | null = null;
+  let activeToasts: Map<string, HTMLElement> = new Map();
+  let createListener: { off: () => void } | null = null;
+  let dismissListener: { off: () => void } | null = null;
+  let initialized = false;
+
+  const init = (position: string, newestOnTop: boolean, dismissible: boolean) => {
+    if (typeof window === 'undefined' || initialized) return;
+
+    console.log('ToastManager initializing, position:', position); // Debug log
+    initialized = true;
+
+    // Create or update container
+    container = document.querySelector(`.broToastify-container.broToastify-${position}`);
+    if (!container) {
+      container = document.createElement('div');
+      container.className = `broToastify-container broToastify-${position}`;
+      document.body.appendChild(container);
+      console.log('Created container:', container); // Debug log
     }
 
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const activeToastsRef = useRef<Map<string, HTMLElement>>(new Map());
-
-    useEffect(() => {
-      "use client";
-
-      if (typeof window === 'undefined') return;
-
-      // Create or update the container (fixed missing dot in selector)
-      let container = document.querySelector(`.broToastify-container.broToastify-${position}`);
-      if (!container) {
-        container = document.createElement('div');
-        container.className = `broToastify-container broToastify-${position}`;
-        document.body.appendChild(container);
+    // Clean up old containers
+    document.querySelectorAll('.broToastify-container').forEach((oldContainer) => {
+      if (oldContainer !== container) {
+        oldContainer.remove();
       }
-      containerRef.current = container as HTMLDivElement;
+    });
 
-      const updateContainerPosition = (newPosition: string) => {
-        if (containerRef.current) {
-          // Remove previous position classes
-          containerRef.current.className = `broToastify-container broToastify-${newPosition}`;
-          // Move existing toasts to the new container
-          activeToastsRef.current.forEach((toastElement) => {
-            if (containerRef.current && !containerRef.current.contains(toastElement)) {
-              if (newestOnTop) {
-                containerRef.current.prepend(toastElement);
-              } else {
-                containerRef.current.appendChild(toastElement);
-              }
-            }
-          });
-        }
-      };
+    // Handle create event
+    const createHandler = (toast: BroToastify) => {
+      if (!container || !toast) {
+        console.error('No container or invalid toast:', { container, toast });
+        return;
+      }
 
-      const cleanupOldContainers = () => {
-        document.querySelectorAll('.broToastify-container').forEach((oldContainer) => {
-          if (oldContainer !== containerRef.current) {
-            oldContainer.remove();
-          }
-        });
-      };
+      console.log('Received create event for toast:', toast); // Debug log
 
-      const createHandler = (toasts: BroToastify) => {
-        if (!containerRef.current || !toast) return;
+      let toastElement = activeToasts.get(toast.id);
 
-        let toastElement = activeToastsRef.current.get(toasts.id);
+      if (!toastElement) {
+        toastElement = document.createElement('div');
+        toastElement.id = `broToastify-${toast.id}`;
+        toastElement.className = `broToastify-notification broToastify-${toast.type}`;
+        toastElement.setAttribute('data-id', toast.id);
 
-        if (!toastElement) {
-          toastElement = document.createElement('div');
-          toastElement.id = `broToastify-${toasts.id}`; // Match ID used in dismissBroToastify
-          toastElement.className = `broToastify-notification broToastify-${toasts.type}`;
-          toastElement.setAttribute('data-id', toasts.id);
-
-          if (newestOnTop) {
-            containerRef.current.prepend(toastElement);
-          } else {
-            containerRef.current.appendChild(toastElement);
-          }
-
-          activeToastsRef.current.set(toasts.id, toastElement);
+        if (newestOnTop) {
+          container.prepend(toastElement);
+        } else {
+          container.appendChild(toastElement);
         }
 
-        toastElement.innerHTML = `
-        <div class="broToastify-title">${toasts.title || ''}</div>
-        <div class="broToastify-message">${toasts.message}</div>
+        activeToasts.set(toast.id, toastElement);
+        console.log('Created toast element:', toastElement); // Debug log
+      }
+
+      toastElement.innerHTML = `
+        <div class="broToastify-title">${toast.title || ''}</div>
+        <div class="broToastify-message">${toast.message}</div>
         ${dismissible ? `<button class="broToastify-close" aria-label="Close">×</button>` : ''}
       `;
 
-        if (dismissible) {
-          const closeButton = toastElement.querySelector('.broToastify-close');
-          closeButton?.addEventListener('click', () => {
-            if (containerRef.current && toastElement) {
-              containerRef.current.removeChild(toastElement);
-              activeToastsRef.current.delete(toasts.id);
-              toast.dismiss(toasts.id);
-            }
-          });
-        }
+      if (dismissible) {
+        const closeButton = toastElement.querySelector('.broToastify-close');
+        closeButton?.addEventListener('click', () => {
+          if (container && toastElement) {
+            container.removeChild(toastElement);
+            activeToasts.delete(toast.id);
+            coreToast.dismiss(toast.id);
+            console.log('Dismissed toast:', toast.id); // Debug log
+          }
+        });
+      }
 
-        if (toasts.duration && toasts.duration > 0) {
-          setTimeout(() => {
-            if (containerRef.current && toastElement && containerRef.current.contains(toastElement)) {
-              containerRef.current.removeChild(toastElement);
-              activeToastsRef.current.delete(toasts.id);
-            }
-          }, toasts.duration);
-        }
-      };
+      // Auto-dismiss
+      if (toast.duration && toast.duration > 0) {
+        setTimeout(() => {
+          if (container && toastElement && container.contains(toastElement)) {
+            container.removeChild(toastElement);
+            activeToasts.delete(toast.id);
+            console.log('Auto-dismissed toast:', toast.id); // Debug log
+          }
+        }, toast.duration);
+      }
+    };
 
-      const dismissHandler = (id: string) => {
-        const toastElement = activeToastsRef.current.get(id);
-        if (toastElement && containerRef.current && containerRef.current.contains(toastElement)) {
-          containerRef.current.removeChild(toastElement);
-          activeToastsRef.current.delete(id);
-        }
-      };
+    // Handle dismiss event
+    const dismissHandler = (id: string) => {
+      const toastElement = activeToasts.get(id);
+      if (toastElement && container && container.contains(toastElement)) {
+        container.removeChild(toastElement);
+        activeToasts.delete(id);
+        console.log('Handled dismiss event for toast:', id); // Debug log
+      }
+    };
 
-      // Register event listeners
-      const createListener = on('create', createHandler);
-      const dismissListener = on('dismiss', dismissHandler);
-
-      // Update position if it changes
-      updateContainerPosition(position);
-      cleanupOldContainers();
-
-      // Cleanup on unmount (fixed incorrect listener cleanup)
-      return () => {
-        createListener.off();
-        dismissListener.off();
-        if (containerRef.current) {
-          containerRef.current.remove();
-          activeToastsRef.current.clear();
-        }
-      };
-    }, [position, newestOnTop, dismissible]);
-
-    return null;
+    // Register listeners
+    createListener = on('create', createHandler);
+    dismissListener = on('dismiss', dismissHandler);
   };
 
-// Server-safe ToastContainer wrapper
+  const cleanup = () => {
+    if (typeof window === 'undefined') return;
+    console.log('ToastManager cleaning up'); // Debug log
+    createListener?.off();
+    dismissListener?.off();
+    if (container) {
+      container.remove();
+      activeToasts.clear();
+      container = null;
+    }
+    initialized = false;
+  };
+
+  return { init, cleanup };
+})();
+
+// Server-safe Toaster component
 export const Toaster: React.FC<{
   position?: BroToastifyToastifyOptions['position'];
-  newestOnTop?: any;
-  dismissible?: any;
-}> = (props) => {
-  if (typeof window === 'undefined') {
-    return null;
+  newestOnTop?: boolean;
+  dismissible?: boolean;
+}> = ({ position = 'top-right', newestOnTop = true, dismissible = true }) => {
+  // Initialize toast manager on client-side
+  if (typeof window !== 'undefined') {
+    toastManager.cleanup(); // Ensure no duplicate managers
+    toastManager.init(position, newestOnTop, dismissible);
   }
-  return <ClientToastContainer {...props} />;
+
+  // Render a hidden placeholder to avoid hydration issues
+  return <div className={`broToastify-container broToastify-${position}`} style={{ display: 'none' }} />;
 };
 
 // Hook for using toast
 export const broToastify = () => {
   return {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      toast.show(message, options),
+      coreToast.show(message, options),
     success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      toast.success(message, options),
+      coreToast.success(message, options),
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      toast.error(message, options),
+      coreToast.error(message, options),
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      toast.info(message, options),
+      coreToast.info(message, options),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
-      toast.warning(message, options),
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => {
-      const toasts = toast.loading(message, options);
-      return toasts;
-    },
+      coreToast.warning(message, options),
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+      coreToast.loading(message, options),
     promises: (
       promise: Promise<any>,
       messages: { loading: string; success: string; error: string },
       options?: Partial<BroToastifyToastifyOptions>
-    ) => toast.promises(promise, messages, options),
-    isToastActive: (id: string) => toast.isToastActive(id),
-    dismiss: (id: string) => toast.dismissible(id),
-    dismissible: (id: string) => toast.dismissible(id),
-    clearAll: toast.clearAll,
+    ) => coreToast.promises(promise, messages, options),
+    isToastActive: (id: string) => coreToast.isToastActive(id),
+    dismiss: (id: string) => coreToast.dismiss(id),
+    dismissible: (id: string) => coreToast.dismissible(id),
+    clearAll: () => coreToast.clearAll(),
   };
 };
 
 // Export the core toast for direct usage
-export default toast;
+export const toast = coreToast;
