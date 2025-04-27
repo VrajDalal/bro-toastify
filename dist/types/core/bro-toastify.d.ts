@@ -1,4 +1,5 @@
 import { BroToastify, BroToastifyToastifyOptions } from "./types";
+export declare function useBroToastifyStyles(): void;
 export declare function createBroToastify(options: BroToastifyToastifyOptions): BroToastify | undefined;
 export declare function dismissBroToastify(id: string): void;
 export declare function clearBroToastify(): void;

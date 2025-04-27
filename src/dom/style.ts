@@ -206,8 +206,8 @@ export function getBroToastifyStyles(): string {
 }
 
 export function injectStyles(): void {
-  if (typeof window === 'undefined') {
-    return; // Do nothing during SSR
+  if (typeof window !== 'undefined') {
+    injectStyles()
   }
 
   if (!document.getElementById('broToastify-styles')) {
