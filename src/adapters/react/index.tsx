@@ -12,10 +12,17 @@ const ClientToastContainer: React.FC<{
   newestOnTop,
   dismissible,
 }) => {
+    if (typeof window === "undefined") {
+      // If running on the server, return null to avoid rendering
+      return null;
+    }
+
     const containerRef = useRef<HTMLDivElement | null>(null);
     const activeToastsRef = useRef<Map<string, HTMLElement>>(new Map());
 
     useEffect(() => {
+      "use client";
+
       if (typeof window === 'undefined') return;
 
       // Create or update the container (fixed missing dot in selector)
