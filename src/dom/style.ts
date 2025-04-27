@@ -208,8 +208,10 @@ export function getBroToastifyStyles(): string {
 let stylesInjected = false; // Flag to track if styles are injected
 
 export function injectStyles() {
-  if (typeof window !== 'undefined') {
-    injectStyles()
+  // Ensure this runs only on the client side
+  if (typeof window === 'undefined' || typeof document === 'undefined') {
+    console.warn('injectStyles called on the server. Skipping style injection.');
+    return;
   }
 
   if (stylesInjected) return; // Prevent repeated execution
@@ -220,27 +222,8 @@ export function injectStyles() {
     style.id = 'broToastify-styles';
     style.innerHTML = getBroToastifyStyles();
     document.head.appendChild(style);
-  }
-
-  // Check if styles are already injected
-  if (document.getElementById('broToastify-styles')) {
-    console.debug('Styles are already injected'); // Log if styles are already present
-    return;
-  }
-
-  // Create style element
-  const styleElement = document.createElement('style');
-  console.debug('Creating style element:', styleElement); // Log the created style element
-
-  styleElement.id = 'broToastify-styles';
-  styleElement.textContent = getBroToastifyStyles();
-  console.debug('Generated styles:', styleElement.textContent); // Log the generated CSS content
-
-  // Append to head
-  if (document.head) {
-    document.head.appendChild(styleElement);
-    console.debug('Style element appended to head'); // Log when the style element is appended
+    console.debug('Styles injected successfully.');
   } else {
-    console.error('document.head is not available'); // Log an error if document.head is missing
+    console.debug('Styles are already injected.');
   }
 }
