@@ -1,5 +1,5 @@
 import React from 'react';
-import coreToast, { on } from '../../core/bro-toastify';
+import coreToast,{  on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
 // Global singleton to manage toast rendering
@@ -158,19 +158,18 @@ const toastManager = (() => {
 
 // Client-side initialization script
 if (typeof window !== 'undefined') {
-  // Run initialization in a microtask to ensure DOM is ready
-  queueMicrotask(() => {
+  // Delay initialization to ensure DOM and Toaster render are complete
+  setTimeout(() => {
     console.log('Running client-side Toaster initialization'); // Debug log
-    // Check if Toaster was rendered (position stored in global)
-    const toasterConfig = (window as any).__BRO_TOASTER_CONFIG;
-    if (toasterConfig) {
-      console.log('Found Toaster config, initializing:', toasterConfig); // Debug log
-      toastManager.cleanup();
-      toastManager.init(toasterConfig.position, toasterConfig.newestOnTop, toasterConfig.dismissible);
-    } else {
-      console.warn('No Toaster config found, initialization skipped');
-    }
-  });
+    const toasterConfig = (window as any).__BRO_TOASTER_CONFIG || {
+      position: 'top-right',
+      newestOnTop: true,
+      dismissible: true,
+    };
+    console.log('Toaster config:', toasterConfig); // Debug log
+    toastManager.cleanup();
+    toastManager.init(toasterConfig.position, toasterConfig.newestOnTop, toasterConfig.dismissible);
+  }, 0);
 }
 
 // Server-safe Toaster component
@@ -187,6 +186,8 @@ export const Toaster: React.FC<{
     } catch (error) {
       console.error('Failed to store Toaster config:', error);
     }
+  } else {
+    console.log('Toaster component running in SSR'); // Debug log
   }
 
   // Render a hidden placeholder to avoid hydration issues
