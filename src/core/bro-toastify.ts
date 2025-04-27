@@ -1,18 +1,9 @@
-import { useEffect } from 'react';
 import { BroToastify, BroToastifyToastifyOptions } from "./types";
 import { createContainer, getContainer } from './container';
 import { injectStyles } from "../dom/style";
 
 if (typeof window !== 'undefined') {
     injectStyles();
-}
-
-export function useBroToastifyStyles() {
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            injectStyles();
-        }
-    }, []);
 }
 
 //Default

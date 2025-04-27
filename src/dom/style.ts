@@ -205,10 +205,15 @@ export function getBroToastifyStyles(): string {
   `;
 }
 
-export function injectStyles(): void {
+let stylesInjected = false; // Flag to track if styles are injected
+
+export function injectStyles() {
   if (typeof window !== 'undefined') {
     injectStyles()
   }
+
+  if (stylesInjected) return; // Prevent repeated execution
+  stylesInjected = true;
 
   if (!document.getElementById('broToastify-styles')) {
     const style = document.createElement('style');
