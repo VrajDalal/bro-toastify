@@ -162,7 +162,9 @@ export const Toaster: React.FC<{
   newestOnTop?: boolean
   dismissible?: boolean
 }> = ({ position = "top-right", newestOnTop = true, dismissible = true }) => {
-  // This component just renders a placeholder that will be detected by the MutationObserver
+  // Ensure this component is treated as a client component
+  if (typeof window === "undefined") return null
+
   return (
     <div
       data-bro-toastify="true"
@@ -174,17 +176,11 @@ export const Toaster: React.FC<{
   )
 }
 
-// Create a client-side only version for those who need it
-export const ClientToaster = ({ position = "top-right", newestOnTop = true, dismissible = true }) => {
-  // This is just a wrapper around the regular Toaster
-  return <Toaster position={position as "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | undefined} newestOnTop={newestOnTop} dismissible={dismissible} />
-}
-
-// Add 'use client' directive to this specific component
-ClientToaster.displayName = "ClientToaster"
-if (typeof ClientToaster.toString === "function") {
-  const originalToString = ClientToaster.toString
-  ClientToaster.toString = (): string => "'use client';\n" + originalToString.call(ClientToaster)
+// Mark Toaster as a client component
+Toaster.displayName = "Toaster"
+if (typeof Toaster.toString === "function") {
+  const originalToString = Toaster.toString
+  Toaster.toString = (): string => "'use client';\n" + originalToString.call(Toaster)
 }
 
 // Export the core toast for direct usage

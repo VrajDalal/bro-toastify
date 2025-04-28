@@ -5,15 +5,6 @@ export declare const Toaster: React.FC<{
     newestOnTop?: boolean;
     dismissible?: boolean;
 }>;
-export declare const ClientToaster: {
-    ({ position, newestOnTop, dismissible }: {
-        position?: string | undefined;
-        newestOnTop?: boolean | undefined;
-        dismissible?: boolean | undefined;
-    }): React.JSX.Element;
-    displayName: string;
-    toString(): string;
-};
 export declare const toast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
     success: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
