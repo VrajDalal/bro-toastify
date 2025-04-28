@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect } from "react"
 import toast from "../../core/bro-toastify"
 
@@ -7,11 +9,10 @@ export const Toaster: React.FC<{
     dismissible?: any
 }> = ({ position = "top-right", newestOnTop, dismissible }) => {
     if (typeof window === "undefined") {
-        // Render nothing on the server
         return null
     }
+
     useEffect(() => {
-        // Initialize the toast container after the component mounts
         toast.show("Toast container initialized", {
             position,
             newestOnTop,

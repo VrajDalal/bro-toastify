@@ -155,13 +155,13 @@ const toast = {
 
         promise
             .then((result) => {
-                createBroToastify({ id, message: message.success, type: 'success', ...options });
                 dismissBroToastify(id)
+                createBroToastify({ message: message.success, type: 'success', ...options });
                 return result
             })
             .catch((error) => {
-                createBroToastify({ id, message: message.error, type: 'error', ...options });
                 dismissBroToastify(id)
+                createBroToastify({ message: message.error, type: 'error', ...options });
                 throw error
             });
         return { id };
