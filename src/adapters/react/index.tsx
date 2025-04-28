@@ -1,10 +1,9 @@
 // react/index.tsx
-
-import React, { useEffect } from "react"
+import React from "react"
 import coreToast, { on } from "../../core/bro-toastify"
 import type { BroToastify, BroToastifyToastifyOptions } from "../../core/types"
 import { injectStyles } from "../../dom/style"
-import { ClientOnly } from "./clientOnly"
+import { Toaster } from "./Toaster" // Import the client-side Toaster
 
 // Inject styles and set up MutationObserver on the client
 if (typeof window !== "undefined") {
@@ -121,37 +120,6 @@ function initToastContainer(position: string, newestOnTop: boolean, dismissible:
   })
 }
 
-// Toaster Component
-export const Toaster: React.FC<{
-  position?: BroToastifyToastifyOptions["position"]
-  newestOnTop?: boolean
-  dismissible?: boolean
-}> = ({ position = "top-right", newestOnTop = true, dismissible = true }) => {
-  useEffect(() => {
-    // Trigger initialization after the component mounts
-    const placeholder = document.querySelector('[data-bro-toastify="true"]')
-    if (placeholder) {
-      const position = placeholder.getAttribute("data-position") || "top-right"
-      const newestOnTop = placeholder.getAttribute("data-newest-on-top") !== "false"
-      const dismissible = placeholder.getAttribute("data-dismissible") !== "false"
-
-      initToastContainer(position, newestOnTop, dismissible)
-    }
-  }, [])
-
-  return (
-    <ClientOnly>
-      <div
-        data-bro-toastify="true"
-        data-position={position}
-        data-newest-on-top={String(newestOnTop)}
-        data-dismissible={String(dismissible)}
-        style={{ display: "none" }}
-      />
-    </ClientOnly>
-  )
-}
-
 // Export the core toast for direct usage
 export const toast = coreToast
 
@@ -174,5 +142,8 @@ export const broToastify = () => {
     clearAll: () => coreToast.clearAll(),
   }
 }
+
+// Export the Toaster component
+export { Toaster }
 
 export default toast

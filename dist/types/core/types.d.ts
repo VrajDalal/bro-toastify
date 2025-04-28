@@ -5,6 +5,7 @@ export interface BroToastifyToastifyOptions {
     title?: string;
     duration?: number;
     position?: 'top-left' | 'top-right' | 'top-center' | 'bottom-left' | 'bottom-right' | 'bottom-center';
+    newestOnTop?: boolean;
     dismissible?: boolean;
     dismiss?: (id: string) => void;
     onClose?: () => void;

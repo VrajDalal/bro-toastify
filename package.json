@@ -69,6 +69,7 @@
   },
   "homepage": "https://github.com/VrajDalal/bro-toastify#readme",
   "devDependencies": {
+    "@rollup/plugin-replace": "^6.0.2",
     "@types/jest": "^27.0.0",
     "@types/react": "^17.0.0",
     "@types/vue": "^1.0.31",

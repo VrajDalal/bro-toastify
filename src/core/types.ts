@@ -12,6 +12,7 @@ export interface BroToastifyToastifyOptions {
     | 'bottom-left'
     | 'bottom-right'
     | 'bottom-center';
+    newestOnTop?: boolean;
     dismissible?: boolean;
     dismiss?: (id: string) => void;
     onClose?: () => void;
