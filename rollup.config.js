@@ -10,12 +10,20 @@ export default {
       format: "cjs",
       sourcemap: true,
       exports: "named",
+      globals: {
+        react: "React",
+        "react-dom": "ReactDOM",
+      },
     },
     {
       file: "dist/index.esm.js",
       format: "esm",
       sourcemap: true,
       exports: "named",
+      globals: {
+        react: "React",
+        "react-dom": "ReactDOM",
+      },
     },
     {
       file: "dist/index.umd.js",
@@ -24,6 +32,7 @@ export default {
       sourcemap: true,
       globals: {
         react: "React",
+        "react-dom": "ReactDOM",
         vue: "Vue",
         "@angular/core": "ng.core",
         svelte: "Svelte",
@@ -32,7 +41,14 @@ export default {
       exports: "named",
     },
   ],
-  external: ["react", "vue", "@angular/core", "svelte", "svelte/store"],
+  external: [
+    "react",
+    "react-dom",
+    "vue",
+    "@angular/core",
+    "svelte",
+    "svelte/store",
+  ],
   plugins: [
     typescript({
       tsconfig: "./tsconfig.json",
