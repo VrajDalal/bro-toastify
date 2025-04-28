@@ -9,8 +9,13 @@ export function createContainer(position: BroToastifyToastifyOptions['position']
 
     if (containers.has(position!)) {
         const existingContainer = containers.get(position!)!;
-        existingContainer.className = `broToastify-container broToastify-${position}`;
-        return existingContainer;
+        if (document.body.contains(existingContainer)) {
+            return existingContainer;
+        } else {
+            // Container exists in our map but not in DOM, re-append it
+            document.body.appendChild(existingContainer);
+            return existingContainer;
+        }
     }
     console.debug('Creating container for position:', position);
 
@@ -61,23 +66,41 @@ export function createContainer(position: BroToastifyToastifyOptions['position']
 }
 
 
-export function getContainer(position: BroToastifyToastifyOptions['position']): HTMLElement {
-    if (containers.has(position!)) {
-        console.debug('Retrieving container for position:', position);
-        return containers.get(position!)!;
+export function getContainer(position: BroToastifyToastifyOptions["position"]): HTMLElement | null {
+    if (typeof window === "undefined") {
+        return null // Return null during SSR
     }
 
-    throw new Error(`Container with position "${position}" does not exist.`);
+    // If container exists, return it
+    if (containers.has(position!)) {
+        const container = containers.get(position!)!
+
+        // Make sure it's still in the DOM
+        if (!document.body.contains(container)) {
+            document.body.appendChild(container)
+        }
+
+        return container
+    }
+
+    // Otherwise create a new one
+    return createContainer(position)
 }
 
 
 export function removeAllContainers(): void {
-    console.debug('Removing all containers');
+    if (typeof window === "undefined") {
+      return // Skip during SSR
+    }
+  
+    console.debug("Removing all containers")
     containers.forEach((container) => {
-        container.remove();
-    });
-    containers.clear();
-}
+      if (document.body.contains(container)) {
+        container.remove()
+      }
+    })
+    containers.clear()
+  }
 
 
 

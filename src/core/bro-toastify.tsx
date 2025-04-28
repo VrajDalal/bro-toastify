@@ -8,9 +8,9 @@ if (typeof window !== 'undefined') {
 
 //Default
 const defaultOptions: Partial<BroToastifyToastifyOptions> = {
-    type: 'default',
+    type: "default",
     duration: 3000,
-    position: 'top-right',
+    position: "top-right",
     dismissible: true,
     pauseOnHover: true,
     customIcon: undefined,
