@@ -2,8 +2,8 @@ import React from "react";
 import type { BroToastify, BroToastifyToastifyOptions } from "../../core/types";
 export declare const Toaster: React.FC<{
     position?: BroToastifyToastifyOptions["position"];
-    newestOnTop?: any;
-    dismissible?: any;
+    newestOnTop?: boolean;
+    dismissible?: boolean;
 }>;
 export declare const toast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
@@ -40,7 +40,6 @@ export declare const broToastify: () => {
     } | undefined;
     isToastActive: (id: string) => boolean;
     dismiss: (id: string) => void;
-    dismissible: (id: string) => void;
     clearAll: () => void;
 };
 export default toast;

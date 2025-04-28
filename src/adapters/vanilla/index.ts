@@ -29,9 +29,9 @@ export function init(options?: Partial<BroToastifyContainerOptions>): () => void
 
         // Add to container
         if (options?.newestOnTop) {
-            container.prepend(toastElement);
+            container?.prepend(toastElement);
         } else {
-            container.appendChild(toastElement);
+            container?.appendChild(toastElement);
         }
 
         // Set up dismiss event listener
