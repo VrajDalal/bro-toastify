@@ -1,4 +1,6 @@
-import React from "react"
+// react/index.tsx
+
+import React, { useEffect } from "react"
 import coreToast, { on } from "../../core/bro-toastify"
 import type { BroToastify, BroToastifyToastifyOptions } from "../../core/types"
 import { injectStyles } from "../../dom/style"
@@ -159,11 +161,23 @@ function initToastContainer(position: string, newestOnTop: boolean, dismissible:
 // Server-safe Toaster component - no hooks!
 export const Toaster: React.FC<{
   position?: BroToastifyToastifyOptions["position"]
-  newestOnTop?: boolean
-  dismissible?: boolean
-}> = ({ position = "top-right", newestOnTop = true, dismissible = true }) => {
+  newestOnTop?: any
+  dismissible?: any
+}> = ({ position = "top-right", newestOnTop , dismissible  }) => {
   // Ensure this component is treated as a client component
   if (typeof window === "undefined") return null
+
+  useEffect(() => {
+    // Trigger a re-check for the MutationObserver
+    const placeholder = document.querySelector('[data-bro-toastify="true"]')
+    if (placeholder) {
+      const position = placeholder.getAttribute("data-position") || "top-right"
+      const newestOnTop = placeholder.getAttribute("data-newest-on-top") !== "false"
+      const dismissible = placeholder.getAttribute("data-dismissible") !== "false"
+
+      initToastContainer(position, newestOnTop, dismissible)
+    }
+  }, [])
 
   return (
     <div

@@ -2,8 +2,8 @@ import React from "react";
 import type { BroToastify, BroToastifyToastifyOptions } from "../../core/types";
 export declare const Toaster: React.FC<{
     position?: BroToastifyToastifyOptions["position"];
-    newestOnTop?: boolean;
-    dismissible?: boolean;
+    newestOnTop?: any;
+    dismissible?: any;
 }>;
 export declare const toast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
