@@ -178,26 +178,20 @@ if (typeof window !== 'undefined') {
 // Server-safe Toaster component
 export const Toaster: React.FC<{
   position?: BroToastifyToastifyOptions['position'];
-  newestOnTop?: boolean;
-  dismissible?: boolean;
-}> = ({ position = 'top-right', newestOnTop = true, dismissible = true }) => {
+  newestOnTop?: any;
+  dismissible?: any;
+}> = ({ position = 'top-right', newestOnTop, dismissible }) => {
   // Store config for client-side initialization
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
+  if (typeof window !== 'undefined') {
     try {
-      console.log('Toaster component storing config:', { position, newestOnTop, dismissible });
+      console.log('Toaster component storing config:', { position, newestOnTop, dismissible }); // Debug log
       (window as any).__BRO_TOASTER_CONFIG = { position, newestOnTop, dismissible };
-      toastManager.cleanup();
-      toastManager.init(position, newestOnTop, dismissible);
     } catch (error) {
-      console.error('Failed to initialize Toaster:', error);
+      console.error('Failed to store Toaster config:', error);
     }
-
-    return () => {
-      toastManager.cleanup();
-    };
-  }, [position, newestOnTop, dismissible]);
+  } else {
+    console.log('Toaster component running in SSR'); // Debug log
+  }
 
   // Render a hidden placeholder to avoid hydration issues
   return <div className={`broToastify-container broToastify-${position}`} style={{ display: 'none' }} />;
