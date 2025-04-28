@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import coreToast, { on } from '../../core/bro-toastify';
 import { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
 
@@ -24,9 +24,11 @@ const toastManager = (() => {
     if (!container) {
       container = document.createElement('div');
       container.className = `broToastify-container broToastify-${position}`;
+      container.style.display = 'flex';
       document.body.appendChild(container);
       console.log('Created container:', container); // Debug log
     } else {
+      container.style.display = 'flex';
       console.log('Found existing container:', container); // Debug log
     }
 
@@ -119,12 +121,13 @@ const toastManager = (() => {
     };
 
     // Handle dismiss event
-    const dismissHandler = (id: string) => {
+    const dismissHandler = (toast: BroToastify) => {
+      const id = toast.id;
       const toastElement = activeToasts.get(id);
       if (toastElement && container && container.contains(toastElement)) {
         container.removeChild(toastElement);
         activeToasts.delete(id);
-        console.log('Handled dismiss event for toast:', id); // Debug log
+        console.log('Handled dismiss event for toast:', id);
       } else {
         console.warn('Dismiss event for non-existent toast:', id);
       }
@@ -179,16 +182,22 @@ export const Toaster: React.FC<{
   dismissible?: boolean;
 }> = ({ position = 'top-right', newestOnTop = true, dismissible = true }) => {
   // Store config for client-side initialization
-  if (typeof window !== 'undefined') {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     try {
-      console.log('Toaster component storing config:', { position, newestOnTop, dismissible }); // Debug log
+      console.log('Toaster component storing config:', { position, newestOnTop, dismissible });
       (window as any).__BRO_TOASTER_CONFIG = { position, newestOnTop, dismissible };
+      toastManager.cleanup();
+      toastManager.init(position, newestOnTop, dismissible);
     } catch (error) {
-      console.error('Failed to store Toaster config:', error);
+      console.error('Failed to initialize Toaster:', error);
     }
-  } else {
-    console.log('Toaster component running in SSR'); // Debug log
-  }
+
+    return () => {
+      toastManager.cleanup();
+    };
+  }, [position, newestOnTop, dismissible]);
 
   // Render a hidden placeholder to avoid hydration issues
   return <div className={`broToastify-container broToastify-${position}`} style={{ display: 'none' }} />;

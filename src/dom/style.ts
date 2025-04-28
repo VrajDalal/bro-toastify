@@ -185,24 +185,62 @@ export function getBroToastifyStyles(): string {
   `;
 }
 
-let stylesInjected = false;
-
 export function injectStyles() {
-  if (typeof window === 'undefined' || typeof document === 'undefined') {
-    console.log('injectStyles skipped: server-side');
-    return;
-  }
+  if (typeof window === 'undefined') return;
 
-  if (stylesInjected) {
-    console.log('injectStyles skipped: already injected');
-    return;
-  }
-
-  stylesInjected = true;
+  const styleId = 'bro-toastify-styles';
+  if (document.getElementById(styleId)) return;
 
   const style = document.createElement('style');
-  style.id = 'broToastify-styles';
-  style.innerHTML = getBroToastifyStyles();
+  style.id = styleId;
+  style.innerHTML = `
+    .broToastify-container {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .broToastify-top-right {
+      top: 20px;
+      right: 20px;
+    }
+    .broToastify-notification {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 16px;
+      pointer-events: auto;
+      display: flex;
+      flex-direction::id
+      gap: 8px;
+      min-width: 250px;
+      max-width: 400px;
+      opacity: 1;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .broToastify-success {
+      background: #e6ffed;
+      border: 1px solid #00cc44;
+    }
+    .broToastify-error {
+      background: #ffe6e6;
+      border: 1px solid #ff3333;
+    }
+    .broToastify-close {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      align-self: flex-end;
+    }
+    .broToastify-title {
+      font-weight: bold;
+    }
+    .broToastify-message {
+      font-size: 14px;
+    }
+  `;
   document.head.appendChild(style);
-  console.log('injectStyles: styles injected successfully');
 }
