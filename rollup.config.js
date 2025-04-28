@@ -1,7 +1,6 @@
 import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import postcss from "rollup-plugin-postcss";
-import replace from "@rollup/plugin-replace"
 
 export default {
   input: "src/index.ts",
@@ -35,10 +34,6 @@ export default {
   ],
   external: ["react", "vue", "@angular/core", "svelte", "svelte/store"],
   plugins: [
-    replace({
-      "use client": "", // Replace "use client" with an empty string
-      preventAssignment: true,
-    }),
     typescript({
       tsconfig: "./tsconfig.json",
       useTsconfigDeclarationDir: true,

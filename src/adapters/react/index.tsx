@@ -3,7 +3,7 @@ import React from "react"
 import coreToast, { on } from "../../core/bro-toastify"
 import type { BroToastify, BroToastifyToastifyOptions } from "../../core/types"
 import { injectStyles } from "../../dom/style"
-import { Toaster } from "./Toaster" // Import the client-side Toaster
+import { Toaster } from "./Toaster" // Import the Toaster component
 
 // Inject styles and set up MutationObserver on the client
 if (typeof window !== "undefined") {

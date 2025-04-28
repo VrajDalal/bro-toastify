@@ -1,6 +1,3 @@
-// react/Toaster.tsx
-"use client" // Mark this file as a client component
-
 import React, { useEffect } from "react"
 import toast from "../../core/bro-toastify"
 
