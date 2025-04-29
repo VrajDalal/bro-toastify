@@ -1,6 +1,6 @@
 {
   "name": "bro-toastify",
-  "version": "1.0.51",
+  "version": "1.0.52",
   "description": "A framework-agnostic toast notification library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
