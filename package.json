@@ -6,41 +6,43 @@
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "exports": {
-    "./core/types": "./dist/core/types.js",
     ".": {
       "import": "./dist/index.esm.js",
-      "require": "./dist/index.js",
+      "require": "./dist/index.cjs.js",
       "types": "./dist/types/index.d.ts"
     },
     "./react": {
       "import": "./dist/react.esm.js",
-      "require": "./dist/react.js",
-      "types": "./dist/types/react.d.ts"
+      "require": "./dist/react.cjs.js",
+      "types": "./dist/types/adapters/react/index.d.ts"
     },
     "./vue": {
       "import": "./dist/vue.esm.js",
-      "require": "./dist/vue.js",
+      "require": "./dist/vue.cjs.js",
       "types": "./dist/types/vue.d.ts"
     },
     "./angular": {
       "import": "./dist/angular.esm.js",
-      "require": "./dist/angular.js",
+      "require": "./dist/angular.cjs.js",
       "types": "./dist/types/angular.d.ts"
     },
     "./svelte": {
       "import": "./dist/svelte.esm.js",
-      "require": "./dist/svelte.js",
+      "require": "./dist/svelte.cjs.js",
       "types": "./dist/types/svelte.d.ts"
     },
     "./vanilla": {
       "import": "./dist/vanilla.esm.js",
-      "require": "./dist/vanilla.js",
+      "require": "./dist/vanilla.cjs.js",
       "types": "./dist/types/vanilla.d.ts"
     }
   },
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=10"
+  },
   "scripts": {
     "build": "rollup -c",
     "test": "jest",
