@@ -1,6 +1,10 @@
 import typescript from "rollup-plugin-typescript2";
 import { terser } from "rollup-plugin-terser";
 import postcss from "rollup-plugin-postcss";
+import peerDepsExternal from 'rollup-plugin-peer-deps-external';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import babel from '@rollup/plugin-babel';
 
 export default {
   input: "src/index.ts",
@@ -15,7 +19,7 @@ export default {
       file: "dist/index.esm.js",
       format: "esm",
       sourcemap: true,
-      exports: "named"
+      exports: "named",
     },
     {
       file: "dist/index.umd.js",
@@ -42,9 +46,22 @@ export default {
     "svelte/store",
   ],
   plugins: [
+    peerDepsExternal(), // Excludes peer dependencies
+    resolve(), // Resolves node_modules dependencies
+    commonjs(), // Converts CommonJS modules to ES Modules
     typescript({
       tsconfig: "./tsconfig.json",
       useTsconfigDeclarationDir: true,
+    }),
+    babel({
+      babelHelpers: "bundled",
+      exclude: "node_modules/**",
+      presets: [
+        "@babel/preset-env",
+        "@babel/preset-react",
+        "@babel/preset-typescript",
+      ],
+      extensions: [".js", ".jsx", ".ts", ".tsx"],
     }),
     terser(),
     postcss({
@@ -53,4 +70,5 @@ export default {
       sourceMap: true, // Generate source maps for CSS
     }),
   ],
+  external: ['react', 'react-dom', 'lucide-react'],
 };
