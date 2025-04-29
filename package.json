@@ -7,7 +7,6 @@
   "types": "dist/index.d.ts",
   "exports": {
     "./core/types": "./dist/core/types.js",
-    "./client": "./dist/client.js",
     ".": {
       "import": "./dist/index.esm.js",
       "require": "./dist/index.js",
@@ -17,7 +16,8 @@
     "./react": {
       "import": "./dist/react.esm.js",
       "require": "./dist/react.js",
-      "types": "./dist/types/react.d.ts"
+      "types": "./dist/types/react.d.ts",
+      "react": "./src/adapters/react/index.tsx"
     },
     "./vue": {
       "import": "./dist/vue.esm.js",
