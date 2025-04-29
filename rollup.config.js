@@ -10,20 +10,12 @@ export default {
       format: "cjs",
       sourcemap: true,
       exports: "named",
-      globals: {
-        react: "React",
-        "react-dom": "ReactDOM",
-      },
     },
     {
       file: "dist/index.esm.js",
       format: "esm",
       sourcemap: true,
-      exports: "named",
-      globals: {
-        react: "React",
-        "react-dom": "ReactDOM",
-      },
+      exports: "named"
     },
     {
       file: "dist/index.umd.js",

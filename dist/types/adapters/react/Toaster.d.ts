@@ -1,6 +1,10 @@
 import React from "react";
-export declare const Toaster: React.FC<{
-    position?: "top-right" | "top-left" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center";
-    newestOnTop?: boolean;
-    dismissible?: boolean;
-}>;
+import type { BroToastifyToastifyOptions } from "../../core/types";
+export declare const Toaster: {
+    ({ position, newestOnTop, dismissible, }: {
+        position?: BroToastifyToastifyOptions["position"];
+        newestOnTop?: boolean | undefined;
+        dismissible?: boolean | undefined;
+    }): React.ReactPortal | null;
+    displayName: string;
+};

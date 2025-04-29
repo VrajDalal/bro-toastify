@@ -1,5 +1,5 @@
 import { BroToastify, BroToastifyToastifyOptions } from "./types";
-import { createContainer, getContainer } from './container';
+import { createContainer } from './container';
 import { injectStyles } from "../dom/style";
 
 if (typeof window !== 'undefined') {
@@ -63,25 +63,21 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
 
 //dismiss broToastify
 export function dismissBroToastify(id: string): void {
-    const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id);
-
-    if (BroToastify) {
-        broToastifys.delete(id); // Remove the toast from the Map
-        emit('dismiss', BroToastify);
-
-        if (BroToastify.onClose) {
-            BroToastify.onClose();
-        }
-
-        // Remove the toast element from the DOM
-        if (typeof window !== 'undefined') {
-            const toastElement = document.getElementById(`broToastify-${id}`);
-            if (toastElement) {
-                toastElement.remove();
-            }
-        }
+    if (typeof window === "undefined") {
+      return // Skip during SSR
     }
-}
+  
+    const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id)
+  
+    if (BroToastify) {
+      broToastifys.delete(id) // Remove the toast from the Map
+      emit("dismiss", BroToastify)
+  
+      if (BroToastify.onClose) {
+        BroToastify.onClose()
+      }
+    }
+  }
 
 //clear all broToastify
 export function clearBroToastify(): void {
