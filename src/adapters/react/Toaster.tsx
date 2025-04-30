@@ -49,7 +49,7 @@ export const Toaster = ({
       createListener.off();
       dismissListener.off();
     };
-  }, [newestOnTop]);
+  }, [newestOnTop,animation]);
 
   useEffect(() => {
     const timers = toasts.map((toast) => {
@@ -74,7 +74,7 @@ export const Toaster = ({
         element.dataset.animated = 'true';
       }
     });
-  }, [toasts]);
+  }, [toasts, animation]);
 
   if (!mounted) return null;
 

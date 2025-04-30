@@ -41,7 +41,7 @@ export interface BroToastifyContainerOptions {
     maxToasts?: number;
     newestOnTop?: boolean;
     dismissible?: boolean;
-    animation?: AnimationType | AnimationOptions; // Allow string or object
+    animation?: AnimationType // Allow string or object
 }
 
 
