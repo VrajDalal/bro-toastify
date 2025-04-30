@@ -1,7 +1,7 @@
 export type AnimationType = 'fade' | 'top-slide' | 'right-slide' | 'bottom-slide' | 'left-slide' | 'zoom' | 'flip' | 'bounce' | 'none';
 export interface AnimationOptions {
     type: AnimationType;
-    duration: number;
+    duration?: number;
     easing?: string;
     delay?: number;
 }

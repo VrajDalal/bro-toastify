@@ -2,16 +2,25 @@ import { AnimationType, AnimationOptions } from './types';
 
 export const defaultAnimationOptions: Record<string, AnimationOptions> = {
   default: { type: 'fade', duration: 300, easing: 'ease' },
-  fade: { type: 'fade', duration: 300, easing: 'ease' },
   success: { type: 'fade', duration: 300, easing: 'ease' },
   error: { type: 'fade', duration: 300, easing: 'ease' },
   info: { type: 'fade', duration: 300, easing: 'ease' },
   warning: { type: 'fade', duration: 500, easing: 'ease' },
   loading: { type: 'fade', duration: 300, easing: 'ease' },
   show: { type: 'fade', duration: 300, easing: 'ease' },
+  promises: { type: 'fade', duration: 300, easing: 'ease' },
+  fade: { type: 'fade', duration: 300, easing: 'ease' },
+  'top-slide': { type: 'top-slide', duration: 300, easing: 'ease' },
+  'right-slide': { type: 'right-slide', duration: 300, easing: 'ease' },
+  'bottom-slide': { type: 'bottom-slide', duration: 300, easing: 'ease' },
+  'left-slide': { type: 'left-slide', duration: 300, easing: 'ease' },
+  zoom: { type: 'zoom', duration: 300, easing: 'ease' },
+  flip: { type: 'flip', duration: 300, easing: 'ease' },
+  bounce: { type: 'bounce', duration: 300, easing: 'ease' },
+  none: { type: 'none', duration: 0, easing: 'ease' },
 };
 
-export function getAnimationKeyframes(type: AnimationType): string {
+export function getAnimationKeyframes(type: AnimationType): string {  
   switch (type) {
     case 'fade':
       return `

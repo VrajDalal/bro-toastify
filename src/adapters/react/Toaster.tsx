@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { on, dismissBroToastify } from '../../core/bro-toastify';
-import type { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from '../../core/types';
+import type { BroToastify, BroToastifyContainerOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 import { applyAnimation, defaultAnimationOptions } from '../../core/animation';
 
@@ -11,11 +11,10 @@ export const Toaster = ({
   dismissible = true,
   animation = 'fade',
 }: {
-  position?: BroToastifyToastifyOptions['position'];
+  position?: BroToastify['position'];
   newestOnTop?: boolean;
   dismissible?: boolean;
   animation?: BroToastifyContainerOptions['animation'];
-
 }) => {
   const [toasts, setToasts] = useState<BroToastify[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -26,14 +25,20 @@ export const Toaster = ({
     injectStyles();
 
     const createHandler = (toast: BroToastify) => {
-      console.log('Toast created:', { id: toast.id, animation: toast.animation });
-      setToasts((prev) => (newestOnTop ? [toast, ...prev] : [...prev, toast]));
+      // Apply Toaster's animation if toast.animation is undefined
+      const updatedToast = {
+        ...toast,
+        animation: toast.animation || defaultAnimationOptions[animation],
+      };
+      console.log('Toast created:', { id: updatedToast.id, animation: updatedToast.animation });
+      setToasts((prev) => (newestOnTop ? [updatedToast, ...prev] : [...prev, updatedToast]));
     };
 
     const dismissHandler = (toast: BroToastify) => {
       const element = toastRefs.current.get(toast.id);
       if (element) {
-        applyAnimation(element, toast.animation, false);
+        console.log('Applying dismiss animation:', { id: toast.id, animation: toast.animation || defaultAnimationOptions[animation] });
+        applyAnimation(element, toast.animation || defaultAnimationOptions[animation], false);
         element.addEventListener('animationend', () => {
           setToasts((prev) => prev.filter((t) => t.id !== toast.id));
           toastRefs.current.delete(toast.id);
@@ -71,8 +76,8 @@ export const Toaster = ({
     toasts.forEach((toast) => {
       const element = toastRefs.current.get(toast.id);
       if (element && !element.dataset.animated) {
-        console.log('Applying enter animation:', { id: toast.id, animation: toast.animation });
-        applyAnimation(element, toast.animation, true);
+        console.log('Applying enter animation:', { id: toast.id, animation: toast.animation || defaultAnimationOptions[animation] });
+        applyAnimation(element, toast.animation || defaultAnimationOptions[animation], true);
         element.dataset.animated = 'true';
       }
     });

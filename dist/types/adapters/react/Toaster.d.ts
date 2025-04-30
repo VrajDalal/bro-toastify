@@ -1,8 +1,8 @@
 import React from 'react';
-import type { BroToastifyToastifyOptions, BroToastifyContainerOptions } from '../../core/types';
+import type { BroToastify, BroToastifyContainerOptions } from '../../core/types';
 export declare const Toaster: {
     ({ position, newestOnTop, dismissible, animation, }: {
-        position?: BroToastifyToastifyOptions['position'];
+        position?: BroToastify['position'];
         newestOnTop?: boolean | undefined;
         dismissible?: boolean | undefined;
         animation?: BroToastifyContainerOptions['animation'];
