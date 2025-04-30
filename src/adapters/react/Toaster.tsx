@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { on, dismissBroToastify } from '../../core/bro-toastify';
-import type { BroToastify, BroToastifyToastifyOptions,BroToastifyContainerOptions } from '../../core/types';
+import type { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 import { applyAnimation, defaultAnimationOptions } from '../../core/animation';
 
@@ -33,7 +33,7 @@ export const Toaster = ({
     const dismissHandler = (toast: BroToastify) => {
       const element = toastRefs.current.get(toast.id);
       if (element) {
-        applyAnimation(element, toast.animation || defaultAnimationOptions.default, false);
+        applyAnimation(element, toast.animation, false);
         element.addEventListener('animationend', () => {
           setToasts((prev) => prev.filter((t) => t.id !== toast.id));
           toastRefs.current.delete(toast.id);
@@ -50,7 +50,7 @@ export const Toaster = ({
       createListener.off();
       dismissListener.off();
     };
-  }, [newestOnTop,animation]);
+  }, [newestOnTop, animation]);
 
   useEffect(() => {
     const timers = toasts.map((toast) => {
@@ -71,8 +71,8 @@ export const Toaster = ({
     toasts.forEach((toast) => {
       const element = toastRefs.current.get(toast.id);
       if (element && !element.dataset.animated) {
-        console.log('Applying enter animation:', { id: toast.id, animation: toast.animation || defaultAnimationOptions[animation] });
-        applyAnimation(element, toast.animation || defaultAnimationOptions.default, true);
+        console.log('Applying enter animation:', { id: toast.id, animation: toast.animation });
+        applyAnimation(element, toast.animation, true);
         element.dataset.animated = 'true';
       }
     });
