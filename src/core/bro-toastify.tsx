@@ -2,6 +2,15 @@ import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } 
 import { createContainer } from './container';
 import { injectStyles } from "../dom/style";
 import { defaultAnimationOptions } from "./animation";
+import { AnimationType } from "./types";
+
+// Global variable to store Toaster's animation
+let toasterAnimation: AnimationType = 'fade';
+
+// Function to set Toaster's animation
+export function setToasterAnimation(animation: AnimationType) {
+    toasterAnimation = animation;
+}
 
 if (typeof window !== 'undefined') {
     injectStyles();
@@ -43,9 +52,10 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
 
     const type = options.type || 'default';
     const containerOptions = options.containerOptions || {};
+    console.log('createBroToastify options:', { containerOptions, type, toasterAnimation });
     const containerAnimation = containerOptions.animation
         ? { ...defaultAnimationOptions[containerOptions.animation] }
-        : defaultAnimationOptions.fade; // Default to fade
+        : defaultAnimationOptions[toasterAnimation]; // Default to fade
 
     const mergedOptions = {
         ...defaultOptions,

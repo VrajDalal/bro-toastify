@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { on, dismissBroToastify } from '../../core/bro-toastify';
+import { on, dismissBroToastify, setToasterAnimation } from '../../core/bro-toastify';
 import type { BroToastify, BroToastifyContainerOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 import { applyAnimation, defaultAnimationOptions } from '../../core/animation';
@@ -23,6 +23,7 @@ export const Toaster = ({
   useEffect(() => {
     setMounted(true);
     injectStyles();
+    setToasterAnimation(animation);
 
     const createHandler = (toast: BroToastify) => {
       // Apply Toaster's animation if toast.animation is undefined

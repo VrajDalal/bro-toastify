@@ -1,4 +1,6 @@
 import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from "./types";
+import { AnimationType } from "./types";
+export declare function setToasterAnimation(animation: AnimationType): void;
 export declare function createBroToastify(options: BroToastifyToastifyOptions & {
     containerOptions?: BroToastifyContainerOptions;
 }): BroToastify | undefined;
