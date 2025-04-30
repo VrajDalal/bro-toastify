@@ -1,22 +1,17 @@
-import { AnimationType, AnimationDirection, AnimationOptions } from './types';
+import { AnimationType, AnimationOptions } from './types';
 
 export const defaultAnimationOptions: Record<string, AnimationOptions> = {
   default: { type: 'fade', duration: 300, easing: 'ease' },
+  fade: { type: 'fade', duration: 300, easing: 'ease' },
   success: { type: 'fade', duration: 300, easing: 'ease' },
-  error: { type: 'slide', duration: 400, direction: 'right', easing: 'ease-in-out' },
-  info: { type: 'zoom', duration: 350, easing: 'ease' },
-  warning: { type: 'bounce', duration: 500, easing: 'ease-out' },
-  loading: { type: 'slide', duration: 300, direction: 'top', easing: 'ease' },
+  error: { type: 'fade', duration: 300, easing: 'ease' },
+  info: { type: 'fade', duration: 300, easing: 'ease' },
+  warning: { type: 'fade', duration: 500, easing: 'ease' },
+  loading: { type: 'fade', duration: 300, easing: 'ease' },
   show: { type: 'fade', duration: 300, easing: 'ease' },
 };
 
-export function getAnimationKeyframes(type: AnimationType, direction?: AnimationDirection, customKeyframes?: AnimationOptions['customKeyframes']): string {
-  if (type === 'custom' && customKeyframes) {
-    return `
-      ${customKeyframes.in}
-      ${customKeyframes.out}
-    `;
-  }
+export function getAnimationKeyframes(type: AnimationType): string {
   switch (type) {
     case 'fade':
       return `
@@ -30,29 +25,51 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
         }
       `;
 
-    case 'slide':
-      let translateFrom = 'translateY(-100%)';
-      let translateTo = 'translateY(0)';
-
-      if (direction === 'right') {
-        translateFrom = 'translateX(100%)';
-        translateTo = 'translateX(0)';
-      } else if (direction === 'bottom') {
-        translateFrom = 'translateY(100%)';
-        translateTo = 'translateY(0)';
-      } else if (direction === 'left') {
-        translateFrom = 'translateX(-100%)';
-        translateTo = 'translateX(0)';
-      }
-
+    case 'top-slide':
       return `
-        @keyframes broToastify-slide-in {
-          from { transform: ${translateFrom}; opacity: 0; }
-          to { transform: ${translateTo}; opacity: 1; }
+        @keyframes broToastify-top-slide-in {
+          from { transform: translateY(-100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
         }
-        @keyframes broToastify-slide-out {
-          from { transform: ${translateTo}; opacity: 1; }
-          to { transform: ${translateFrom}; opacity: 0; }
+        @keyframes broToastify-top-slide-out {
+          from { transform: translateY(0); opacity: 1; }
+          to { transform: translateY(-100%); opacity: 0; }
+        }
+      `;
+
+    case 'right-slide':
+      return `
+        @keyframes broToastify-right-slide-in {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes broToastify-right-slide-out {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+
+    case 'bottom-slide':
+      return `
+        @keyframes broToastify-bottom-slide-in {
+          from { transform: translateY(100%); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes broToastify-bottom-slide-out {
+          from { transform: translateY(0); opacity: 1; }
+          to { transform: translateY(100%); opacity: 0; }
+        }
+      `;
+
+    case 'left-slide':
+      return `
+        @keyframes broToastify-left-slide-in {
+          from { transform: translateX(-100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes broToastify-left-slide-out {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(-100%); opacity: 0; }
         }
       `;
 
@@ -100,19 +117,16 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
   }
 }
 
-
 export function applyAnimation(
   element: HTMLElement,
   options: AnimationOptions = defaultAnimationOptions.default,
   isEnter: boolean = true
 ): void {
-  const { type, duration, easing, delay, customKeyframes } = options;
+  const { type, duration, easing, delay } = options;
 
   if (type === 'none') return;
 
-  const animationName = type === 'custom' && customKeyframes
-    ? (isEnter ? 'custom-in' : 'custom-out')
-    : `broToastify-${type}-${isEnter ? 'in' : 'out'}`;
+  const animationName = `broToastify-${type}-${isEnter ? 'in' : 'out'}`;
 
   element.style.animation = `${animationName} ${duration}ms ${easing} ${delay ? `${delay}ms` : ''} forwards`;
 

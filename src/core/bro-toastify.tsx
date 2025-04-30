@@ -36,11 +36,16 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
         return undefined; // Prevent toast creation during SSR
     }
 
+    if (!options.message) {
+        console.error("BroToastify: message is required")
+        return undefined
+    }
+
     const type = options.type || 'default';
-    const containerOptions = options.containerOptions || {}; // New: Access container options
+    const containerOptions = options.containerOptions || {};
     const containerAnimation = typeof containerOptions.animation === 'string'
-        ? { ...defaultAnimationOptions[type], type: containerOptions.animation } // Use default settings with specified type
-        : containerOptions.animation; // Use full AnimationOptions if provided
+        ? { ...defaultAnimationOptions[type], type: containerOptions.animation }
+        : defaultAnimationOptions.fade; // Default to fade
 
     const mergedOptions = {
         ...defaultOptions,

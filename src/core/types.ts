@@ -1,18 +1,11 @@
 
-export type AnimationType = 'fade' | 'slide' | 'zoom' | 'flip' | 'bounce' | 'none' | 'custom';
-
-export type AnimationDirection = 'top' | 'right' | 'bottom' | 'left';
+export type AnimationType = 'fade' | 'top-slide' | 'right-slide' | 'bottom-slide' | 'left-slide' | 'zoom' | 'flip' | 'bounce' | 'none';
 
 export interface AnimationOptions {
     type: AnimationType;
     duration: number;
-    direction?: AnimationDirection;
     easing?: string;
-    delay?: number; // New: Animation delay in ms
-    customKeyframes?: {
-        in: string; // Custom keyframe CSS for entry
-        out: string; // Custom keyframe CSS for exit
-    }
+    delay?: number;
 }
 
 export interface BroToastifyToastifyOptions {

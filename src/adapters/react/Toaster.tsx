@@ -9,7 +9,7 @@ export const Toaster = ({
   position = 'top-right',
   newestOnTop,
   dismissible,
-  animation,
+  animation = 'fade',
 }: {
   position?: BroToastifyToastifyOptions['position'];
   newestOnTop?: any;
@@ -68,32 +68,13 @@ export const Toaster = ({
 
   useEffect(() => {
     toasts.forEach((toast) => {
-      const element = document.getElementById(`broToastify-${toast.id}`);
+      const element = toastRefs.current.get(toast.id);
       if (element && !element.dataset.animated) {
-        // Inject custom keyframes if provided
-        if (toast.animation?.type === 'custom' && toast.animation.customKeyframes) {
-          const styleId = `broToastify-custom-${toast.id}`;
-          let style = document.getElementById(styleId);
-          if (!style) {
-            style = document.createElement('style');
-            style.id = styleId;
-            style.innerHTML = toast.animation.customKeyframes.in + toast.animation.customKeyframes.out;
-            document.head.appendChild(style);
-          }
-        }
         applyAnimation(element, toast.animation || defaultAnimationOptions.default, true);
         element.dataset.animated = 'true';
-
-        // Apply exit animation on dismiss
-        element.addEventListener('animationend', () => {
-          if (element.dataset.dismissed) {
-            setToasts((prev) => prev.filter((t) => t.id !== toast.id));
-          }
-        }, { once: true });
       }
     });
   }, [toasts]);
-
 
   if (!mounted) return null;
 

@@ -158,10 +158,10 @@ export function getBroToastifyStyles(): string {
     }
     
     ${getAnimationKeyframes("fade")}
-    ${getAnimationKeyframes("slide", "top")}
-    ${getAnimationKeyframes("slide", "right")}
-    ${getAnimationKeyframes("slide", "bottom")}
-    ${getAnimationKeyframes("slide", "left")}
+    ${getAnimationKeyframes("top-slide")}
+    ${getAnimationKeyframes("right-slide")}
+    ${getAnimationKeyframes("bottom-slide")}
+    ${getAnimationKeyframes("left-slide")}
     ${getAnimationKeyframes("zoom")}
     ${getAnimationKeyframes("flip")}
     ${getAnimationKeyframes("bounce")}
