@@ -81,7 +81,7 @@ export const Toaster = ({
             document.head.appendChild(style);
           }
         }
-        applyAnimation(element, toast.animation, true);
+        applyAnimation(element, toast.animation || defaultAnimationOptions.default, true);
         element.dataset.animated = 'true';
 
         // Apply exit animation on dismiss

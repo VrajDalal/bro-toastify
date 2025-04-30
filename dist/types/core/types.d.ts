@@ -36,5 +36,5 @@ export interface BroToastifyContainerOptions {
     maxToasts?: number;
     newestOnTop?: boolean;
     dismissible?: boolean;
-    animation?: AnimationOptions;
+    animation?: AnimationType | AnimationOptions;
 }

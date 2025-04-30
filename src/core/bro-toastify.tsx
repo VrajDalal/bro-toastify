@@ -38,13 +38,17 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
 
     const type = options.type || 'default';
     const containerOptions = options.containerOptions || {}; // New: Access container options
+    const containerAnimation = typeof containerOptions.animation === 'string'
+        ? { ...defaultAnimationOptions[type], type: containerOptions.animation } // Use default settings with specified type
+        : containerOptions.animation; // Use full AnimationOptions if provided
+
     const mergedOptions = {
         ...defaultOptions,
         ...options,
         duration: options.type === 'loading' ? 0 : (options.duration ?? defaultOptions.duration),
         animation: {
-            ...defaultAnimationOptions[type], // Apply default animation for type
-            ...containerOptions.animation, // Toaster-level animation
+            ...defaultAnimationOptions[type], // Default animation for type
+            ...containerAnimation, // Toaster-level animation
             ...options.animation, // Toast-specific animation (highest priority)
         },
     };
