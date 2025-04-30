@@ -43,8 +43,8 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
 
     const type = options.type || 'default';
     const containerOptions = options.containerOptions || {};
-    const containerAnimation = typeof containerOptions.animation === 'string'
-        ? { ...defaultAnimationOptions[type], type: containerOptions.animation }
+    const containerAnimation = containerOptions.animation
+        ? { ...defaultAnimationOptions[containerOptions.animation] }
         : defaultAnimationOptions.fade; // Default to fade
 
     const mergedOptions = {
@@ -147,22 +147,22 @@ function emit(event: string, data: any): void {
 
 //convenience methods
 const toast = {
-    show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    show: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'show', ...options }),
-    success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    success: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'success', ...options }),
-    error: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    error: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'error', ...options }),
-    info: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    info: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'info', ...options }),
-    warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    warning: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'warning', ...options }),
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'loading', ...options }),
     promises: (
         promise: Promise<any>,
         message: { loading: string, success: string, error: string },
-        options?: Partial<BroToastifyToastifyOptions>
+        options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }
     ) => {
         if (typeof window === 'undefined') {
             return undefined; // Prevent execution during SSR

@@ -3,8 +3,8 @@ import type { BroToastifyToastifyOptions, BroToastifyContainerOptions } from '..
 export declare const Toaster: {
     ({ position, newestOnTop, dismissible, animation, }: {
         position?: BroToastifyToastifyOptions['position'];
-        newestOnTop?: any;
-        dismissible?: any;
+        newestOnTop?: boolean | undefined;
+        dismissible?: boolean | undefined;
         animation?: BroToastifyContainerOptions['animation'];
     }): React.ReactPortal | null;
     displayName: string;

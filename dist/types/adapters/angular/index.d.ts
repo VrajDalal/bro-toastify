@@ -20,17 +20,31 @@ export declare class ToastContainerComponent {
     handleDismiss(id: string): void;
 }
 export declare const angularToast: {
-    show: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
-    success: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
-    error: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
-    info: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
-    warning: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> | undefined) => BroToastify | undefined;
+    show: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
+    success: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
+    error: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
+    info: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
+    warning: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
+    loading: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
     promises: (promise: Promise<any>, message: {
         loading: string;
         success: string;
         error: string;
-    }, options?: Partial<BroToastifyToastifyOptions> | undefined) => {
+    }, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => {
         id: string;
     } | undefined;
     isToastActive: (id: string) => boolean;

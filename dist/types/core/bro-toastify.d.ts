@@ -8,17 +8,31 @@ export declare function on(event: string, callback: Function): {
     off: () => void;
 };
 declare const toast: {
-    show: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
-    success: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
-    error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
-    info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
-    warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => BroToastify | undefined;
+    show: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
+    success: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
+    error: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
+    info: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
+    warning: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
     promises: (promise: Promise<any>, message: {
         loading: string;
         success: string;
         error: string;
-    }, options?: Partial<BroToastifyToastifyOptions>) => {
+    }, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => {
         id: string;
     } | undefined;
     isToastActive: (id: string) => boolean;

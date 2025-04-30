@@ -7,13 +7,13 @@ import { applyAnimation, defaultAnimationOptions } from '../../core/animation';
 
 export const Toaster = ({
   position = 'top-right',
-  newestOnTop,
-  dismissible,
+  newestOnTop = true,
+  dismissible = true,
   animation = 'fade',
 }: {
   position?: BroToastifyToastifyOptions['position'];
-  newestOnTop?: any;
-  dismissible?: any;
+  newestOnTop?: boolean;
+  dismissible?: boolean;
   animation?: BroToastifyContainerOptions['animation'];
 
 }) => {
@@ -26,6 +26,7 @@ export const Toaster = ({
     injectStyles();
 
     const createHandler = (toast: BroToastify) => {
+      console.log('Toast created:', { id: toast.id, animation: toast.animation });
       setToasts((prev) => (newestOnTop ? [toast, ...prev] : [...prev, toast]));
     };
 
@@ -70,6 +71,7 @@ export const Toaster = ({
     toasts.forEach((toast) => {
       const element = toastRefs.current.get(toast.id);
       if (element && !element.dataset.animated) {
+        console.log('Applying enter animation:', { id: toast.id, animation: toast.animation || defaultAnimationOptions[animation] });
         applyAnimation(element, toast.animation || defaultAnimationOptions.default, true);
         element.dataset.animated = 'true';
       }
