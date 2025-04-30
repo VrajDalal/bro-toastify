@@ -1,14 +1,4 @@
-
-export type AnimationType = 'fade' | 'slide' | 'zoom' | 'flip' | 'bounce' | 'none';
-
-export type AnimationDirection = 'top' | 'right' | 'bottom' | 'left';
-
-export interface AnimationOptions {
-  type: AnimationType;
-  duration: number;
-  direction?: AnimationDirection;
-  easing?: string;
-}
+import { AnimationType, AnimationDirection, AnimationOptions } from './types';
 
 export const defaultAnimationOptions: AnimationOptions = {
   type: 'fade',
@@ -29,11 +19,11 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
           to { opacity: 0; }
         }
       `;
-    
+
     case 'slide':
       let translateFrom = 'translateY(-100%)';
       let translateTo = 'translateY(0)';
-      
+
       if (direction === 'right') {
         translateFrom = 'translateX(100%)';
         translateTo = 'translateX(0)';
@@ -44,7 +34,7 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
         translateFrom = 'translateX(-100%)';
         translateTo = 'translateX(0)';
       }
-      
+
       return `
         @keyframes broToastify-slide-in {
           from { transform: ${translateFrom}; opacity: 0; }
@@ -55,7 +45,7 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
           to { transform: ${translateFrom}; opacity: 0; }
         }
       `;
-    
+
     case 'zoom':
       return `
         @keyframes broToastify-zoom-in {
@@ -67,7 +57,7 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
           to { transform: scale(0.5); opacity: 0; }
         }
       `;
-    
+
     case 'flip':
       return `
         @keyframes broToastify-flip-in {
@@ -79,7 +69,7 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
           to { transform: perspective(400px) rotateX(90deg); opacity: 0; }
         }
       `;
-    
+
     case 'bounce':
       return `
         @keyframes broToastify-bounce-in {
@@ -93,7 +83,7 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
           100% { transform: scale(0.5); opacity: 0; }
         }
       `;
-    
+
     case 'none':
     default:
       return '';
@@ -102,18 +92,18 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
 
 
 export function applyAnimation(
-  element: HTMLElement, 
+  element: HTMLElement,
   options: AnimationOptions = defaultAnimationOptions,
   isEnter: boolean = true
 ): void {
   const { type, duration, easing } = options;
-  
+
   if (type === 'none') return;
-  
+
   const animationName = `broToastify-${type}-${isEnter ? 'in' : 'out'}`;
-  
+
   element.style.animation = `${animationName} ${duration}ms ${easing} forwards`;
-  
+
   // Clean up after animation completes
   element.addEventListener('animationend', () => {
     element.style.animation = '';

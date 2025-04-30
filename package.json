@@ -133,5 +133,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "dynamic": "^4.2.2"
   }
 }

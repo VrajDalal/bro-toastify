@@ -5,17 +5,29 @@ import type { BroToastifyToastifyOptions } from '../../core/types';
 export { Toaster };
 
 export const broToastify = () => ({
-    show: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    show: (
+        message: string,
+        options?: Partial<BroToastifyToastifyOptions>) =>
         coreToast.show(message, options),
-    success: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    success: (
+        message: string,
+        options?: Partial<BroToastifyToastifyOptions>) =>
         coreToast.success(message, options),
-    error: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    error: (
+        message: string,
+        options?: Partial<BroToastifyToastifyOptions>) =>
         coreToast.error(message, options),
-    info: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    info: (
+        message: string,
+        options?: Partial<BroToastifyToastifyOptions>) =>
         coreToast.info(message, options),
-    warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    warning: (
+        message: string,
+        options?: Partial<BroToastifyToastifyOptions>) =>
         coreToast.warning(message, options),
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) =>
+    loading: (
+        message: string,
+        options?: Partial<BroToastifyToastifyOptions>) =>
         coreToast.loading(message, options),
     promises: (
         promise: Promise<any>,

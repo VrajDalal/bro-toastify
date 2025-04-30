@@ -13,6 +13,7 @@ export interface BroToastifyToastifyOptions {
     pauseOnHover?: boolean;
     customIcon?: string;
     customClass?: string;
+    animation?: AnimationOptions;
 }
 export interface BroToastify extends BroToastifyToastifyOptions {
     id: string;
@@ -21,4 +22,12 @@ export interface BroToastify extends BroToastifyToastifyOptions {
 export interface BroToastifyContainerOptions {
     maxToasts?: number;
     newestOnTop?: boolean;
+}
+export type AnimationType = 'fade' | 'slide' | 'zoom' | 'flip' | 'bounce' | 'none';
+export type AnimationDirection = 'top' | 'right' | 'bottom' | 'left';
+export interface AnimationOptions {
+    type: AnimationType;
+    duration: number;
+    direction?: AnimationDirection;
+    easing?: string;
 }

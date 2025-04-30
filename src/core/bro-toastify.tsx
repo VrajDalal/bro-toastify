@@ -1,6 +1,7 @@
 import { BroToastify, BroToastifyToastifyOptions } from "./types";
 import { createContainer } from './container';
 import { injectStyles } from "../dom/style";
+import { defaultAnimationOptions } from "./animation";
 
 if (typeof window !== 'undefined') {
     injectStyles();
@@ -15,6 +16,7 @@ const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     pauseOnHover: true,
     customIcon: undefined,
     customClass: undefined,
+    animation: defaultAnimationOptions
 }
 
 // Store for active toasts
@@ -34,7 +36,12 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
         return undefined; // Prevent toast creation during SSR
     }
 
-    const mergedOptions = { ...defaultOptions, ...options };
+    const mergedOptions = {
+        ...defaultOptions,
+        ...options,
+        duration: options.type === 'loading' ? 0 : (options.duration ?? defaultOptions.duration)
+    };
+    
     const id = generateId();
 
     const BroToastify: BroToastify = {
@@ -64,20 +71,20 @@ export function createBroToastify(options: BroToastifyToastifyOptions): BroToast
 //dismiss broToastify
 export function dismissBroToastify(id: string): void {
     if (typeof window === "undefined") {
-      return // Skip during SSR
+        return // Skip during SSR
     }
-  
+
     const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id)
-  
+
     if (BroToastify) {
-      broToastifys.delete(id) // Remove the toast from the Map
-      emit("dismiss", BroToastify)
-  
-      if (BroToastify.onClose) {
-        BroToastify.onClose()
-      }
+        broToastifys.delete(id) // Remove the toast from the Map
+        emit("dismiss", BroToastify)
+
+        if (BroToastify.onClose) {
+            BroToastify.onClose()
+        }
     }
-  }
+}
 
 //clear all broToastify
 export function clearBroToastify(): void {

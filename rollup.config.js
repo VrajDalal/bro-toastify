@@ -30,6 +30,7 @@ export default [
         globals: {
           react: 'React',
           'react-dom': 'ReactDOM',
+          'react/jsx-runtime': 'React',
           vue: 'Vue',
           '@angular/core': 'ng.core',
           svelte: 'Svelte',
@@ -59,7 +60,7 @@ export default [
         sourceMap: true,
       }),
     ],
-    external: ['react', 'react-dom', 'vue', '@angular/core', 'svelte', 'svelte/store'],
+    external: ['react', 'react-dom','react/jsx-runtime', 'vue', '@angular/core', 'svelte', 'svelte/store'],
   },
   {
     input: 'src/adapters/react/index.ts',

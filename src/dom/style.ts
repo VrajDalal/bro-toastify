@@ -56,6 +56,11 @@ export function getBroToastifyStyles(): string {
       color: white;
     }
 
+    .broToastify-loading {
+      background-color: #F3F4F6;
+      color: #333;
+    }
+
     .broToastify-loader-container {
       display: flex;
       align-items: center;
@@ -152,9 +157,14 @@ export function getBroToastifyStyles(): string {
       align-items: center;
     }
     
-    ${getAnimationKeyframes ? getAnimationKeyframes("fade") : ""}
-    ${getAnimationKeyframes ? getAnimationKeyframes("slide", "top") : ""}
-    ${getAnimationKeyframes ? getAnimationKeyframes("zoom") : ""}
+    ${getAnimationKeyframes("fade")}
+    ${getAnimationKeyframes("slide", "top")}
+    ${getAnimationKeyframes("slide", "right")}
+    ${getAnimationKeyframes("slide", "bottom")}
+    ${getAnimationKeyframes("slide", "left")}
+    ${getAnimationKeyframes("zoom")}
+    ${getAnimationKeyframes("flip")}
+    ${getAnimationKeyframes("bounce")}
     
     @media (max-width: 576px) {
       .broToastify-container {
@@ -191,7 +201,7 @@ export function getBroToastifyStyles(): string {
 export function injectStyles() {
   if (typeof window === "undefined" || stylesInjected) return
 
-  const styleId = "bro-toastify-styles"
+  const styleId = "broToastify-styles"
   if (document.getElementById(styleId)) {
     stylesInjected = true
     return

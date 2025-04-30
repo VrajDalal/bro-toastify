@@ -1,13 +1,17 @@
 import { BroToastify, BroToastifyToastifyOptions } from "../core/types";
 import { injectStyles, getBroToastifyStyles } from "./style";
+import { applyAnimation, defaultAnimationOptions } from "../core/animation";
 
 export function createBroToastifyElement(broToastify: BroToastify): HTMLElement {
-    const { id, type, message, title, dismissible, customClass } = broToastify;
+    const { id, type, message, title, dismissible, customClass, animation } = broToastify;
 
     const broToastifyElement = document.createElement("div");
     broToastifyElement.id = `broToastify-${id}`;
     broToastifyElement.className = `broToastify-notification broToastify-${type} ${customClass || ""}`;
     broToastifyElement.setAttribute("role", "alert");
+
+    // Apply animation
+    applyAnimation(broToastifyElement, animation || defaultAnimationOptions, true);
 
     //add title
     if (title) {
@@ -17,11 +21,26 @@ export function createBroToastifyElement(broToastify: BroToastify): HTMLElement 
         broToastifyElement.appendChild(broToastifyTitleElement);
     }
 
-    //add message
-    const broToastifyMessageElement = document.createElement('div');
-    broToastifyMessageElement.className = 'broToastify-message';
-    broToastifyMessageElement.textContent = message;
-    broToastifyElement.appendChild(broToastifyMessageElement);
+    if (type === 'loading') {
+        const loaderContainer = document.createElement('div');
+        loaderContainer.className = 'broToastify-loader-container';
+
+        const loader = document.createElement('div');
+        loader.className = 'broToastify-loader';
+        loaderContainer.appendChild(loader);
+
+        const messageElement = document.createElement('div');
+        messageElement.className = 'broToastify-loader-message';
+        messageElement.textContent = message;
+        loaderContainer.appendChild(messageElement);
+
+        broToastifyElement.appendChild(loaderContainer);
+    } else {
+        const broToastifyMessageElement = document.createElement('div');
+        broToastifyMessageElement.className = 'broToastify-message';
+        broToastifyMessageElement.textContent = message;
+        broToastifyElement.appendChild(broToastifyMessageElement);
+    }
 
     // Add close button if dismissible
     if (dismissible) {
