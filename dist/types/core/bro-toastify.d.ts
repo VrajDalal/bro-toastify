@@ -1,5 +1,7 @@
-import { BroToastify, BroToastifyToastifyOptions } from "./types";
-export declare function createBroToastify(options: BroToastifyToastifyOptions): BroToastify | undefined;
+import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from "./types";
+export declare function createBroToastify(options: BroToastifyToastifyOptions & {
+    containerOptions?: BroToastifyContainerOptions;
+}): BroToastify | undefined;
 export declare function dismissBroToastify(id: string): void;
 export declare function clearBroToastify(): void;
 export declare function on(event: string, callback: Function): {

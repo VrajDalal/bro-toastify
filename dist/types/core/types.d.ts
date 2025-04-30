@@ -1,3 +1,16 @@
+export type AnimationType = 'fade' | 'slide' | 'zoom' | 'flip' | 'bounce' | 'none' | 'custom';
+export type AnimationDirection = 'top' | 'right' | 'bottom' | 'left';
+export interface AnimationOptions {
+    type: AnimationType;
+    duration: number;
+    direction?: AnimationDirection;
+    easing?: string;
+    delay?: number;
+    customKeyframes?: {
+        in: string;
+        out: string;
+    };
+}
 export interface BroToastifyToastifyOptions {
     id?: string;
     type?: 'show' | 'success' | 'error' | 'info' | 'warning' | 'default' | 'loading' | 'promises' | 'dismiss';
@@ -22,12 +35,6 @@ export interface BroToastify extends BroToastifyToastifyOptions {
 export interface BroToastifyContainerOptions {
     maxToasts?: number;
     newestOnTop?: boolean;
-}
-export type AnimationType = 'fade' | 'slide' | 'zoom' | 'flip' | 'bounce' | 'none';
-export type AnimationDirection = 'top' | 'right' | 'bottom' | 'left';
-export interface AnimationOptions {
-    type: AnimationType;
-    duration: number;
-    direction?: AnimationDirection;
-    easing?: string;
+    dismissible?: boolean;
+    animation?: AnimationOptions;
 }

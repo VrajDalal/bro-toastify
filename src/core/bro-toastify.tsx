@@ -1,4 +1,4 @@
-import { BroToastify, BroToastifyToastifyOptions } from "./types";
+import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from "./types";
 import { createContainer } from './container';
 import { injectStyles } from "../dom/style";
 import { defaultAnimationOptions } from "./animation";
@@ -16,7 +16,7 @@ const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     pauseOnHover: true,
     customIcon: undefined,
     customClass: undefined,
-    animation: defaultAnimationOptions
+    // animation: defaultAnimationOptions
 }
 
 // Store for active toasts
@@ -31,17 +31,24 @@ const generateId = () => {
 }
 
 //Create toast function
-export function createBroToastify(options: BroToastifyToastifyOptions): BroToastify | undefined {
+export function createBroToastify(options: BroToastifyToastifyOptions & { containerOptions?: BroToastifyContainerOptions }): BroToastify | undefined {
     if (typeof window === 'undefined') {
         return undefined; // Prevent toast creation during SSR
     }
 
+    const type = options.type || 'default';
+    const containerOptions = options.containerOptions || {}; // New: Access container options
     const mergedOptions = {
         ...defaultOptions,
         ...options,
-        duration: options.type === 'loading' ? 0 : (options.duration ?? defaultOptions.duration)
+        duration: options.type === 'loading' ? 0 : (options.duration ?? defaultOptions.duration),
+        animation: {
+            ...defaultAnimationOptions[type], // Apply default animation for type
+            ...containerOptions.animation, // Toaster-level animation
+            ...options.animation, // Toast-specific animation (highest priority)
+        },
     };
-    
+
     const id = generateId();
 
     const BroToastify: BroToastify = {

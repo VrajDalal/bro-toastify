@@ -1,12 +1,22 @@
 import { AnimationType, AnimationDirection, AnimationOptions } from './types';
 
-export const defaultAnimationOptions: AnimationOptions = {
-  type: 'fade',
-  duration: 300,
-  easing: 'ease'
+export const defaultAnimationOptions: Record<string, AnimationOptions> = {
+  default: { type: 'fade', duration: 300, easing: 'ease' },
+  success: { type: 'fade', duration: 300, easing: 'ease' },
+  error: { type: 'slide', duration: 400, direction: 'right', easing: 'ease-in-out' },
+  info: { type: 'zoom', duration: 350, easing: 'ease' },
+  warning: { type: 'bounce', duration: 500, easing: 'ease-out' },
+  loading: { type: 'slide', duration: 300, direction: 'top', easing: 'ease' },
+  show: { type: 'fade', duration: 300, easing: 'ease' },
 };
 
-export function getAnimationKeyframes(type: AnimationType, direction?: AnimationDirection): string {
+export function getAnimationKeyframes(type: AnimationType, direction?: AnimationDirection, customKeyframes?: AnimationOptions['customKeyframes']): string {
+  if (type === 'custom' && customKeyframes) {
+    return `
+      ${customKeyframes.in}
+      ${customKeyframes.out}
+    `;
+  }
   switch (type) {
     case 'fade':
       return `
@@ -93,16 +103,18 @@ export function getAnimationKeyframes(type: AnimationType, direction?: Animation
 
 export function applyAnimation(
   element: HTMLElement,
-  options: AnimationOptions = defaultAnimationOptions,
+  options: AnimationOptions = defaultAnimationOptions.default,
   isEnter: boolean = true
 ): void {
-  const { type, duration, easing } = options;
+  const { type, duration, easing, delay, customKeyframes } = options;
 
   if (type === 'none') return;
 
-  const animationName = `broToastify-${type}-${isEnter ? 'in' : 'out'}`;
+  const animationName = type === 'custom' && customKeyframes
+    ? (isEnter ? 'custom-in' : 'custom-out')
+    : `broToastify-${type}-${isEnter ? 'in' : 'out'}`;
 
-  element.style.animation = `${animationName} ${duration}ms ${easing} forwards`;
+  element.style.animation = `${animationName} ${duration}ms ${easing} ${delay ? `${delay}ms` : ''} forwards`;
 
   // Clean up after animation completes
   element.addEventListener('animationend', () => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { on, dismissBroToastify } from '../../core/bro-toastify';
-import type { BroToastify, BroToastifyToastifyOptions } from '../../core/types';
+import type { BroToastify, BroToastifyToastifyOptions,BroToastifyContainerOptions } from '../../core/types';
 import { injectStyles } from '../../dom/style';
 import { applyAnimation, defaultAnimationOptions } from '../../core/animation';
 
@@ -9,10 +9,13 @@ export const Toaster = ({
   position = 'top-right',
   newestOnTop,
   dismissible,
+  animation,
 }: {
   position?: BroToastifyToastifyOptions['position'];
   newestOnTop?: any;
   dismissible?: any;
+  animation?: BroToastifyContainerOptions['animation'];
+
 }) => {
   const [toasts, setToasts] = useState<BroToastify[]>([]);
   const [mounted, setMounted] = useState(false);
@@ -29,7 +32,7 @@ export const Toaster = ({
     const dismissHandler = (toast: BroToastify) => {
       const element = toastRefs.current.get(toast.id);
       if (element) {
-        applyAnimation(element, toast.animation || defaultAnimationOptions, false);
+        applyAnimation(element, toast.animation || defaultAnimationOptions.default, false);
         element.addEventListener('animationend', () => {
           setToasts((prev) => prev.filter((t) => t.id !== toast.id));
           toastRefs.current.delete(toast.id);
@@ -65,13 +68,32 @@ export const Toaster = ({
 
   useEffect(() => {
     toasts.forEach((toast) => {
-      const element = toastRefs.current.get(toast.id);
+      const element = document.getElementById(`broToastify-${toast.id}`);
       if (element && !element.dataset.animated) {
-        applyAnimation(element, toast.animation || defaultAnimationOptions, true);
+        // Inject custom keyframes if provided
+        if (toast.animation?.type === 'custom' && toast.animation.customKeyframes) {
+          const styleId = `broToastify-custom-${toast.id}`;
+          let style = document.getElementById(styleId);
+          if (!style) {
+            style = document.createElement('style');
+            style.id = styleId;
+            style.innerHTML = toast.animation.customKeyframes.in + toast.animation.customKeyframes.out;
+            document.head.appendChild(style);
+          }
+        }
+        applyAnimation(element, toast.animation, true);
         element.dataset.animated = 'true';
+
+        // Apply exit animation on dismiss
+        element.addEventListener('animationend', () => {
+          if (element.dataset.dismissed) {
+            setToasts((prev) => prev.filter((t) => t.id !== toast.id));
+          }
+        }, { once: true });
       }
     });
   }, [toasts]);
+
 
   if (!mounted) return null;
 
