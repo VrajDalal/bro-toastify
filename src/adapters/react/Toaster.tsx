@@ -110,7 +110,7 @@ export const Toaster = ({
           ) : (
             <div className="broToastify-message">{toast.message}</div>
           )}
-          {dismissible && (
+          {dismissible && toast.type !== 'loading' && toast.type !== 'promises' && (
             <button
               className="broToastify-close"
               aria-label="Close"
