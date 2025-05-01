@@ -41,7 +41,7 @@ declare const toast: {
         containerOptions?: BroToastifyContainerOptions;
     }) => {
         id: string;
-    } | undefined;
+    };
     isToastActive: (id: string) => boolean;
     dismiss: (idOrToast: string | BroToastify) => void;
     dismissible: (id: string) => void;

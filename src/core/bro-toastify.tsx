@@ -1,6 +1,4 @@
 import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from "./types";
-import { createContainer } from './container';
-import { injectStyles } from "../dom/style";
 import { defaultAnimationOptions } from "./animation";
 import { AnimationType } from "./types";
 
@@ -12,11 +10,7 @@ export function setToasterAnimation(animation: AnimationType) {
     toasterAnimation = animation;
 }
 
-if (typeof window !== 'undefined') {
-    injectStyles();
-}
-
-//Default
+// Default
 const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     type: "default",
     duration: 3000,
@@ -27,23 +21,19 @@ const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     customClass: undefined,
 }
 
-// Store for active toasts
+// Store for active toasts (in-memory)
 const broToastifys: Map<string, BroToastify> = new Map();
 
-//Event emitter for toast events
+// Event emitter for toast events
 const listeners: Map<string, Function[]> = new Map();
 
-//Generate Unique Id
+// Generate Unique Id
 const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
 }
 
-//Create toast function
+// Create toast function (server-safe)
 export function createBroToastify(options: BroToastifyToastifyOptions & { containerOptions?: BroToastifyContainerOptions }): BroToastify | undefined {
-    if (typeof window === 'undefined') {
-        return undefined; // Prevent toast creation during SSR
-    }
-
     if (!options.message) {
         console.error("BroToastify: message is required")
         return undefined
@@ -78,14 +68,11 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
     broToastifys.set(id, BroToastify);
     console.log('Toast created with id:', id);
 
-    //container exits
-    createContainer(mergedOptions.position!);
-
-    //Emit event
+    // Emit event to notify the client-side Toaster
     emit('create', BroToastify);
 
-    //Auto dismiss
-    if (mergedOptions.duration && mergedOptions.duration > 0) {
+    // Auto dismiss (will only work if this code runs on the client)
+    if (mergedOptions.duration && mergedOptions.duration > 0 && typeof window !== 'undefined') {
         setTimeout(() => {
             dismissBroToastify(id);
         }, mergedOptions.duration);
@@ -94,12 +81,8 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
     return BroToastify
 }
 
-//dismiss broToastify
+// Dismiss broToastify (server-safe)
 export function dismissBroToastify(idOrToast: string | BroToastify): void {
-    if (typeof window === "undefined") {
-        return // Skip during SSR
-    }
-
     let id: string;
     let toastToDismiss: BroToastify | undefined;
 
@@ -123,27 +106,26 @@ export function dismissBroToastify(idOrToast: string | BroToastify): void {
     }
 }
 
-//clear all broToastify
+// Clear all broToastify (server-safe)
 export function clearBroToastify(): void {
-    if (typeof window === 'undefined') {
-        return; // Prevent execution during SSR
-    }
-
     const allBroToastifys = Array.from(broToastifys.values());
     allBroToastifys.forEach((broToastify) => {
         dismissBroToastify(broToastify.id);
     })
 }
 
-//subscribe to event
+// Subscribe to event (client-side Toaster will use this)
 export function on(event: string, callback: Function): { off: () => void } {
+    if (typeof window === 'undefined') {
+        return { off: () => {} }; // No listeners on the server
+    }
     if (!listeners.has(event)) {
         listeners.set(event, []);
     }
 
     listeners.get(event)!.push(callback);
 
-    //return unsubscribe function
+    // Return unsubscribe function
     return {
         off: () => {
             const callbacks = listeners.get(event);
@@ -157,15 +139,17 @@ export function on(event: string, callback: Function): { off: () => void } {
     }
 }
 
-//emit event
+// Emit event (called by createBroToastify and dismissBroToastify)
 function emit(event: string, data: any): void {
-    const callbacks = listeners.get(event);
-    if (callbacks) {
-        callbacks.forEach((callback) => callback(data));
+    if (typeof window !== 'undefined') {
+        const callbacks = listeners.get(event);
+        if (callbacks) {
+            callbacks.forEach((callback) => callback(data));
+        }
     }
 }
 
-//convenience methods
+// Convenience methods (server-safe)
 const toast = {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'show', ...options }),
@@ -189,13 +173,7 @@ const toast = {
         message: { loading: string, success: string, error: string },
         options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }
     ) => {
-        if (typeof window === 'undefined') {
-            return undefined; // Prevent execution during SSR
-        }
-
-        const loadingId = generateId(); // Unique ID for the loading toast
-        console.log('Creating loading toast with id:', loadingId);
-
+        const loadingId = generateId();
         createBroToastify({ id: loadingId, message: message.loading, type: 'loading', ...options });
 
         promise
@@ -217,6 +195,6 @@ const toast = {
     dismiss: (idOrToast: string | BroToastify) => dismissBroToastify(idOrToast),
     dismissible: (id: string) => dismissBroToastify(id),
     clearAll: clearBroToastify,
-}
+};
 
 export default toast;

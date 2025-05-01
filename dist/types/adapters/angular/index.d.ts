@@ -51,7 +51,7 @@ export declare const angularToast: {
         containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
     }) | undefined) => {
         id: string;
-    } | undefined;
+    };
     isToastActive: (id: string) => boolean;
     dismiss: (idOrToast: string | BroToastify) => void;
     dismissible: (id: string) => void;

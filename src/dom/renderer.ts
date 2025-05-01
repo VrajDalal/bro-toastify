@@ -11,7 +11,7 @@ export function createBroToastifyElement(broToastify: BroToastify): HTMLElement 
     broToastifyElement.setAttribute("role", "alert");
 
     // Apply animation
-    applyAnimation(broToastifyElement, animation || defaultAnimationOptions, true);
+    applyAnimation(broToastifyElement, animation, true);
 
     //add title
     if (title) {

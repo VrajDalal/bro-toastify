@@ -16,7 +16,7 @@ export declare const broToastify: () => {
         error: string;
     }, options?: Partial<BroToastifyToastifyOptions>) => {
         id: string;
-    } | undefined;
+    };
     isToastActive: (id: string) => boolean;
     dismiss: (id: string) => void;
     clearAll: () => void;
