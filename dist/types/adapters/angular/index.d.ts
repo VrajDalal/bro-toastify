@@ -37,7 +37,9 @@ export declare const angularToast: {
     }) | undefined) => BroToastify | undefined;
     loading: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
         containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
-    }) | undefined) => void;
+    }) | undefined) => {
+        id: string;
+    };
     promises: (promise: Promise<any>, message: {
         loading: string;
         success: string;

@@ -168,7 +168,9 @@ const toast = {
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'warning', ...options }),
     loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) => {
-        createBroToastify({ message, type: 'loading', ...options });
+        const loadingId = generateId();
+        createBroToastify({ id: loadingId, message, type: 'loading', ...options });
+        return { id: loadingId };
     },
     promises: (
         promise: Promise<any>,
@@ -186,13 +188,11 @@ const toast = {
 
         promise
             .then((result) => {
-                console.log('Promise resolved, dismissing loading toast with id:', loadingId);
                 dismissBroToastify(loadingId);
                 createBroToastify({ message: message.success, type: 'success', ...options });
                 return result;
             })
             .catch((error) => {
-                console.log('Promise rejected, dismissing loading toast with id:', loadingId);
                 dismissBroToastify(loadingId);
                 createBroToastify({ message: message.error, type: 'error', ...options });
                 throw error;
