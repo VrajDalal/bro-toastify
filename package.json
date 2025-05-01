@@ -43,6 +43,11 @@
   "engines": {
     "node": ">=10"
   },
+  "jest": {
+    "testMatch": [
+      "<rootDir>/tests/**/*.ts"
+    ]
+  },
   "scripts": {
     "build": "rollup -c",
     "test": "jest",
@@ -81,7 +86,7 @@
     "@rollup/plugin-replace": "^6.0.2",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.1.2",
-    "@types/jest": "^27.0.0",
+    "@types/jest": "^27.5.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/vue": "^1.0.31",
@@ -136,6 +141,9 @@
     ]
   },
   "dependencies": {
-    "dynamic": "^4.2.2"
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "dynamic": "^4.2.2",
+    "jest-dom": "^4.0.0"
   }
 }

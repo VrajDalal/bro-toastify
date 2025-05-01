@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "ESNext",
+    "types": ["jest", "@testing-library/jest-dom"],
     "moduleResolution": "node",
     "jsx": "react-jsx",
     "esModuleInterop": true,
@@ -11,6 +12,6 @@
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*","test"],
   "exclude": ["node_modules", "dist"]
 }
