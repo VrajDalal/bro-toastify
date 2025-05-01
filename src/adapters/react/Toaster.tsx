@@ -33,14 +33,12 @@ export const Toaster = ({
                 ...toast,
                 animation: toast.animation || defaultAnimationOptions[animation],
             };
-            console.log('Toast created (client):', { id: updatedToast.id, animation: updatedToast.animation });
             setToasts((prev) => (newestOnTop ? [updatedToast, ...prev] : [...prev, updatedToast]));
         };
 
         const dismissHandler = (toast: BroToastify) => {
             const element = toastRefs.current.get(toast.id);
             if (element) {
-                console.log('Applying dismiss animation (client):', { id: toast.id, animation: toast.animation || defaultAnimationOptions[animation] });
                 applyAnimation(element, toast.animation || defaultAnimationOptions[animation], false);
                 element.addEventListener('animationend', () => {
                     setToasts((prev) => prev.filter((t) => t.id !== toast.id));
@@ -79,7 +77,6 @@ export const Toaster = ({
         toasts.forEach((toast) => {
             const element = toastRefs.current.get(toast.id);
             if (element && !element.dataset.animated) {
-                console.log('Applying enter animation (client):', { id: toast.id, animation: toast.animation || defaultAnimationOptions[animation] });
                 applyAnimation(element, toast.animation || defaultAnimationOptions[animation], true);
                 element.dataset.animated = 'true';
             }

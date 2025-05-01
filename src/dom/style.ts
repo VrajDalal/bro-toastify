@@ -213,7 +213,6 @@ export function injectStyles() {
     style.innerHTML = getBroToastifyStyles()
     document.head.appendChild(style)
     stylesInjected = true
-    console.log("Bro-toastify styles injected")
   } catch (error) {
     console.error("Failed to inject bro-toastify styles:", error)
   }

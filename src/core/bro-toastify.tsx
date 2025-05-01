@@ -66,7 +66,6 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
     }
 
     broToastifys.set(id, BroToastify);
-    console.log('Toast created with id:', id);
 
     // Emit event to notify the client-side Toaster
     emit('create', BroToastify);
@@ -93,8 +92,6 @@ export function dismissBroToastify(idOrToast: string | BroToastify): void {
         id = idOrToast.id;
         toastToDismiss = idOrToast;
     }
-
-    console.log('Dismissing toast with id:', id, 'Found:', toastToDismiss);
 
     if (toastToDismiss) {
         broToastifys.delete(id); // Remove the toast from the Map
