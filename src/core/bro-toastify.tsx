@@ -168,9 +168,7 @@ const toast = {
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'warning', ...options }),
     loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) => {
-        const loadingId = generateId();
-        const toast = createBroToastify({ id: loadingId, message, type: 'loading', ...options });
-        return { id: loadingId }; // Return the id for dismissal
+        createBroToastify({ message, type: 'loading', ...options });
     },
     promises: (
         promise: Promise<any>,
