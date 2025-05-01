@@ -177,24 +177,25 @@ const toast = {
             return undefined; // Prevent execution during SSR
         }
 
-        const id = generateId();
+        const loadingId = generateId(); // Unique ID for the loading toast
+        console.log('Creating loading toast with id:', loadingId);
 
-        createBroToastify({ id, message: message.loading, type: 'loading', ...options });
+        createBroToastify({ id: loadingId, message: message.loading, type: 'loading', ...options });
 
         promise
             .then((result) => {
-                console.log('Promise resolved, dismissing loading toast with id:', id)
-                dismissBroToastify(id)
+                console.log('Promise resolved, dismissing loading toast with id:', loadingId)
+                dismissBroToastify(loadingId)
                 createBroToastify({ message: message.success, type: 'success', ...options });
                 return result
             })
             .catch((error) => {
-                console.log('Promise rejected, dismissing loading toast with id:', id);
-                dismissBroToastify(id)
+                console.log('Promise rejected, dismissing loading toast with id:', loadingId);
+                dismissBroToastify(loadingId)
                 createBroToastify({ message: message.error, type: 'error', ...options });
                 throw error
             });
-        return { id };
+        return { id:loadingId };
     },
     isToastActive: (id: string): boolean => {
         return !!Array.from(broToastifys.values()).find((toast) => toast.id === id);
