@@ -7,7 +7,9 @@ export declare const broToastify: () => {
     error: (message: string, options?: Partial<BroToastifyToastifyOptions>) => import("../../core/types").BroToastify | undefined;
     info: (message: string, options?: Partial<BroToastifyToastifyOptions>) => import("../../core/types").BroToastify | undefined;
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions>) => import("../../core/types").BroToastify | undefined;
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => import("../../core/types").BroToastify | undefined;
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions>) => {
+        id: string;
+    };
     promises: (promise: Promise<any>, messages: {
         loading: string;
         success: string;

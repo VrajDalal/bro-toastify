@@ -66,7 +66,8 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
         },
     };
 
-    const id = generateId();
+    // Use the provided id if available, otherwise generate a new one
+    const id = options.id || generateId();
 
     const BroToastify: BroToastify = {
         ...mergedOptions,
@@ -75,6 +76,7 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
     }
 
     broToastifys.set(id, BroToastify);
+    console.log('Toast created with id:', id);
 
     //container exits
     createContainer(mergedOptions.position!);
@@ -123,7 +125,6 @@ export function clearBroToastify(): void {
     })
 }
 
-
 //subscribe to event
 export function on(event: string, callback: Function): { off: () => void } {
     if (!listeners.has(event)) {
@@ -166,8 +167,11 @@ const toast = {
         createBroToastify({ message, type: 'info', ...options }),
     warning: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'warning', ...options }),
-    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
-        createBroToastify({ message, type: 'loading', ...options }),
+    loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) => {
+        const loadingId = generateId();
+        const toast = createBroToastify({ id: loadingId, message, type: 'loading', ...options });
+        return { id: loadingId }; // Return the id for dismissal
+    },
     promises: (
         promise: Promise<any>,
         message: { loading: string, success: string, error: string },
@@ -184,18 +188,18 @@ const toast = {
 
         promise
             .then((result) => {
-                console.log('Promise resolved, dismissing loading toast with id:', loadingId)
-                dismissBroToastify(loadingId)
+                console.log('Promise resolved, dismissing loading toast with id:', loadingId);
+                dismissBroToastify(loadingId);
                 createBroToastify({ message: message.success, type: 'success', ...options });
-                return result
+                return result;
             })
             .catch((error) => {
                 console.log('Promise rejected, dismissing loading toast with id:', loadingId);
-                dismissBroToastify(loadingId)
+                dismissBroToastify(loadingId);
                 createBroToastify({ message: message.error, type: 'error', ...options });
-                throw error
+                throw error;
             });
-        return { id:loadingId };
+        return { id: loadingId };
     },
     isToastActive: (id: string): boolean => {
         return !!Array.from(broToastifys.values()).find((toast) => toast.id === id);
@@ -206,5 +210,3 @@ const toast = {
 }
 
 export default toast;
-
-

@@ -27,7 +27,9 @@ declare const toast: {
     }) => BroToastify | undefined;
     loading: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
         containerOptions?: BroToastifyContainerOptions;
-    }) => BroToastify | undefined;
+    }) => {
+        id: string;
+    };
     promises: (promise: Promise<any>, message: {
         loading: string;
         success: string;
