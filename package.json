@@ -43,11 +43,6 @@
   "engines": {
     "node": ">=10"
   },
-  "jest": {
-    "testMatch": [
-      "<rootDir>/tests/**/*.ts"
-    ]
-  },
   "scripts": {
     "build": "rollup -c",
     "test": "jest",
