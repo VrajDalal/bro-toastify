@@ -13,6 +13,9 @@ declare const toast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
         containerOptions?: BroToastifyContainerOptions;
     }) => BroToastify | undefined;
+    default: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: BroToastifyContainerOptions;
+    }) => BroToastify | undefined;
     success: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
         containerOptions?: BroToastifyContainerOptions;
     }) => BroToastify | undefined;

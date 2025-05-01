@@ -23,6 +23,9 @@ export declare const angularToast: {
     show: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
         containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
     }) | undefined) => BroToastify | undefined;
+    default: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
+        containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
+    }) | undefined) => BroToastify | undefined;
     success: (message: string, options?: (Partial<BroToastifyToastifyOptions> & {
         containerOptions?: import("../../core/types").BroToastifyContainerOptions | undefined;
     }) | undefined) => BroToastify | undefined;

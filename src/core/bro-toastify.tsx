@@ -169,6 +169,8 @@ function emit(event: string, data: any): void {
 const toast = {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'show', ...options }),
+    default: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
+        createBroToastify({ message, type: 'default', ...options }),
     success: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'success', ...options }),
     error: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
