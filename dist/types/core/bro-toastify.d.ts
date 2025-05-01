@@ -4,7 +4,7 @@ export declare function setToasterAnimation(animation: AnimationType): void;
 export declare function createBroToastify(options: BroToastifyToastifyOptions & {
     containerOptions?: BroToastifyContainerOptions;
 }): BroToastify | undefined;
-export declare function dismissBroToastify(id: string): void;
+export declare function dismissBroToastify(idOrToast: string | BroToastify): void;
 export declare function clearBroToastify(): void;
 export declare function on(event: string, callback: Function): {
     off: () => void;
@@ -40,7 +40,7 @@ declare const toast: {
         id: string;
     } | undefined;
     isToastActive: (id: string) => boolean;
-    dismiss: (id: string) => void;
+    dismiss: (idOrToast: string | BroToastify) => void;
     dismissible: (id: string) => void;
     clearAll: typeof clearBroToastify;
 };

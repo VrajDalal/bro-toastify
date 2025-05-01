@@ -50,7 +50,7 @@ export declare const angularToast: {
         id: string;
     } | undefined;
     isToastActive: (id: string) => boolean;
-    dismiss: (id: string) => void;
+    dismiss: (idOrToast: string | BroToastify) => void;
     dismissible: (id: string) => void;
     clearAll: typeof import("../../core/bro-toastify").clearBroToastify;
 };

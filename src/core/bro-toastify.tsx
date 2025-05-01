@@ -95,20 +95,30 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
 }
 
 //dismiss broToastify
-export function dismissBroToastify(id: string): void {
+export function dismissBroToastify(idOrToast: string | BroToastify): void {
     if (typeof window === "undefined") {
         return // Skip during SSR
     }
 
-    const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id)
-    console.log('Dismissing toast with id:', id, 'Found:', BroToastify);
+    let id: string;
+    let toastToDismiss: BroToastify | undefined;
 
-    if (BroToastify) {
-        broToastifys.delete(id) // Remove the toast from the Map
-        emit("dismiss", BroToastify)
+    if (typeof idOrToast === 'string') {
+        id = idOrToast;
+        toastToDismiss = Array.from(broToastifys.values()).find((t) => t.id === id);
+    } else {
+        id = idOrToast.id;
+        toastToDismiss = idOrToast;
+    }
 
-        if (BroToastify.onClose) {
-            BroToastify.onClose()
+    console.log('Dismissing toast with id:', id, 'Found:', toastToDismiss);
+
+    if (toastToDismiss) {
+        broToastifys.delete(id); // Remove the toast from the Map
+        emit("dismiss", toastToDismiss);
+
+        if (toastToDismiss.onClose) {
+            toastToDismiss.onClose();
         }
     }
 }
@@ -202,7 +212,7 @@ const toast = {
     isToastActive: (id: string): boolean => {
         return !!Array.from(broToastifys.values()).find((toast) => toast.id === id);
     },
-    dismiss: (id: string) => dismissBroToastify(id),
+    dismiss: (idOrToast: string | BroToastify) => dismissBroToastify(idOrToast),
     dismissible: (id: string) => dismissBroToastify(id),
     clearAll: clearBroToastify,
 }
