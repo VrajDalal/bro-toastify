@@ -25,7 +25,6 @@ const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     pauseOnHover: true,
     customIcon: undefined,
     customClass: undefined,
-    // animation: defaultAnimationOptions
 }
 
 // Store for active toasts
@@ -52,7 +51,6 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
 
     const type = options.type || 'default';
     const containerOptions = options.containerOptions || {};
-    console.log('createBroToastify options:', { containerOptions, type, toasterAnimation });
     const containerAnimation = containerOptions.animation
         ? { ...defaultAnimationOptions[containerOptions.animation] }
         : defaultAnimationOptions[toasterAnimation]; // Default to fade
@@ -101,6 +99,7 @@ export function dismissBroToastify(id: string): void {
     }
 
     const BroToastify = Array.from(broToastifys.values()).find((t) => t.id === id)
+    console.log('Dismissing toast with id:', id, 'Found:', BroToastify);
 
     if (BroToastify) {
         broToastifys.delete(id) // Remove the toast from the Map
@@ -184,11 +183,13 @@ const toast = {
 
         promise
             .then((result) => {
+                console.log('Promise resolved, dismissing loading toast with id:', id)
                 dismissBroToastify(id)
                 createBroToastify({ message: message.success, type: 'success', ...options });
                 return result
             })
             .catch((error) => {
+                console.log('Promise rejected, dismissing loading toast with id:', id);
                 dismissBroToastify(id)
                 createBroToastify({ message: message.error, type: 'error', ...options });
                 throw error
