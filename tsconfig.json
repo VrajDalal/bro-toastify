@@ -12,6 +12,6 @@
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["src/**/*","test"],
+  "include": ["src/**/*","test", "tailwind.config.js"],
   "exclude": ["node_modules", "dist"]
 }

@@ -20,110 +20,8 @@ export const defaultAnimationOptions: Record<string, AnimationOptions> = {
   none: { type: 'none', duration: 0, easing: 'ease' },
 };
 
-export function getAnimationKeyframes(type: AnimationType): string {  
-  switch (type) {
-    case 'fade':
-      return `
-        @keyframes broToastify-fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes broToastify-fade-out {
-          from { opacity: 1; }
-          to { opacity: 0; }
-        }
-      `;
+export function getAnimationKeyframes(type: AnimationType): void {
 
-    case 'top-slide':
-      return `
-        @keyframes broToastify-top-slide-in {
-          from { transform: translateY(-100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes broToastify-top-slide-out {
-          from { transform: translateY(0); opacity: 1; }
-          to { transform: translateY(-100%); opacity: 0; }
-        }
-      `;
-
-    case 'right-slide':
-      return `
-        @keyframes broToastify-right-slide-in {
-          from { transform: translateX(100%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes broToastify-right-slide-out {
-          from { transform: translateX(0); opacity: 1; }
-          to { transform: translateX(100%); opacity: 0; }
-        }
-      `;
-
-    case 'bottom-slide':
-      return `
-        @keyframes broToastify-bottom-slide-in {
-          from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-        @keyframes broToastify-bottom-slide-out {
-          from { transform: translateY(0); opacity: 1; }
-          to { transform: translateY(100%); opacity: 0; }
-        }
-      `;
-
-    case 'left-slide':
-      return `
-        @keyframes broToastify-left-slide-in {
-          from { transform: translateX(-100%); opacity: 0; }
-          to { transform: translateX(0); opacity: 1; }
-        }
-        @keyframes broToastify-left-slide-out {
-          from { transform: translateX(0); opacity: 1; }
-          to { transform: translateX(-100%); opacity: 0; }
-        }
-      `;
-
-    case 'zoom':
-      return `
-        @keyframes broToastify-zoom-in {
-          from { transform: scale(0.5); opacity: 0; }
-          to { transform: scale(1); opacity: 1; }
-        }
-        @keyframes broToastify-zoom-out {
-          from { transform: scale(1); opacity: 1; }
-          to { transform: scale(0.5); opacity: 0; }
-        }
-      `;
-
-    case 'flip':
-      return `
-        @keyframes broToastify-flip-in {
-          from { transform: perspective(400px) rotateX(90deg); opacity: 0; }
-          to { transform: perspective(400px) rotateX(0deg); opacity: 1; }
-        }
-        @keyframes broToastify-flip-out {
-          from { transform: perspective(400px) rotateX(0deg); opacity: 1; }
-          to { transform: perspective(400px) rotateX(90deg); opacity: 0; }
-        }
-      `;
-
-    case 'bounce':
-      return `
-        @keyframes broToastify-bounce-in {
-          0% { transform: scale(0.5); opacity: 0; }
-          50% { transform: scale(1.05); opacity: 0.8; }
-          100% { transform: scale(1); opacity: 1; }
-        }
-        @keyframes broToastify-bounce-out {
-          0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.05); opacity: 0.8; }
-          100% { transform: scale(0.5); opacity: 0; }
-        }
-      `;
-
-    case 'none':
-    default:
-      return '';
-  }
 }
 
 export function applyAnimation(
@@ -131,16 +29,66 @@ export function applyAnimation(
   options: AnimationOptions = defaultAnimationOptions.default,
   isEnter: boolean = true
 ): void {
-  const { type, duration, easing, delay } = options;
+  const { type } = options;
 
   if (type === 'none') return;
 
-  const animationName = `broToastify-${type}-${isEnter ? 'in' : 'out'}`;
+  // Map animation type to Tailwind class
+  const animationClasses: Record<AnimationType, string> = {
+    fade: 'animate-fade',
+    'top-slide': isEnter ? 'animate-topSlide' : 'animate-topSlideReverse',
+    'right-slide': isEnter ? 'animate-rightSlide' : 'animate-rightSlideReverse',
+    'bottom-slide': isEnter ? 'animate-bottomSlide' : 'animate-bottomSlideReverse',
+    'left-slide': isEnter ? 'animate-leftSlide' : 'animate-leftSlideReverse',
+    zoom: 'animate-zoom',
+    flip: 'animate-flip',
+    bounce: 'animate-bounce',
+    none: '',
+  };
 
-  element.style.animation = `${animationName} ${duration}ms ${easing} ${delay ? `${delay}ms` : ''} forwards`;
+  // Add reverse animations for smooth dismissal
+  const style = document.createElement('style');
+  style.textContent = `
+    .animate-topSlideReverse {
+      animation: topSlideReverse 0.3s ease-in-out forwards;
+    }
+    @keyframes topSlideReverse {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-100%); opacity: 0; }
+    }
+    .animate-rightSlideReverse {
+      animation: rightSlideReverse 0.3s ease-in-out forwards;
+    }
+    @keyframes rightSlideReverse {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+    .animate-bottomSlideReverse {
+      animation: bottomSlideReverse 0.3s ease-in-out forwards;
+    }
+    @keyframes bottomSlideReverse {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(100%); opacity: 0; }
+    }
+    .animate-leftSlideReverse {
+      animation: leftSlideReverse 0.3s ease-in-out forwards;
+    }
+    @keyframes leftSlideReverse {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(-100%); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
 
-  // Clean up after animation completes
-  element.addEventListener('animationend', () => {
-    element.style.animation = '';
-  }, { once: true });
+  const animationClass = animationClasses[type];
+  if (animationClass) {
+    element.classList.add(animationClass);
+    element.addEventListener(
+      'animationend',
+      () => {
+        element.classList.remove(animationClass);
+      },
+      { once: true }
+    )
+  }
 }
