@@ -63,6 +63,7 @@ export default [
         extract: "index.css",
         minimize: true,
         sourceMap: true,
+        plugins: [require("tailwindcss"), require("autoprefixer")],
       }),
       preserveDirectives(),
     ],

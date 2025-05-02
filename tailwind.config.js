@@ -1,6 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.tsx",               // This ensures it picks your Toaster file
+    // "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/adapters/**/*.{js,ts,jsx,tsx}", // if your file is in adapters
+  ],
   theme: {
     extend: {
       keyframes: {
