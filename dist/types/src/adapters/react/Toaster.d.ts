@@ -1,5 +1,6 @@
 import React from 'react';
 import type { BroToastify, BroToastifyContainerOptions } from '../../core/types';
+import '../../index.css';
 export declare const Toaster: {
     ({ position, newestOnTop, dismissible, animation, }: {
         position?: BroToastify['position'];

@@ -5,11 +5,12 @@ import { createPortal } from 'react-dom';
 import { on, dismissBroToastify, setToasterAnimation } from '../../core/bro-toastify'; // Import 'on'
 import type { BroToastify, BroToastifyContainerOptions } from '../../core/types';
 import { applyAnimation, defaultAnimationOptions } from '../../core/animation';
+import '../../index.css'
 
 export const Toaster = ({
     position = 'top-right',
     newestOnTop = true,
-    dismissible = true,
+    dismissible = false,
     animation = 'fade',
 }: {
     position?: BroToastify['position'];

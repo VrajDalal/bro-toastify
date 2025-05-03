@@ -1,6 +1,7 @@
 import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } from "./types";
 import { defaultAnimationOptions } from "./animation";
 import { AnimationType } from "./types";
+import '../../src/index.css'; // Import global styles
 
 // Global variable to store Toaster's animation
 let toasterAnimation: AnimationType = 'fade';
