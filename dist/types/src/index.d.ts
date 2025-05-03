@@ -1,3 +1,4 @@
+import './index.css';
 export * from './core/bro-toastify';
 export * from './core/types';
 import * as ReactAdapter from './adapters/react';

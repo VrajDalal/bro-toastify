@@ -1,6 +1,6 @@
+import './index.css';
 export * from './core/bro-toastify';
 export * from './core/types';
-
 // Export framework adapters
 import * as ReactAdapter from './adapters/react';
 import * as AngularAdapter from './adapters/angular';

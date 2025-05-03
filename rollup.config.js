@@ -6,11 +6,13 @@ import babel from "@rollup/plugin-babel";
 import terser from "@rollup/plugin-terser";
 import postcss from "rollup-plugin-postcss";
 import preserveDirectives from "rollup-preserve-directives";
-import tailwindcss from '@tailwindcss/postcss';
-import autoprefixer from 'autoprefixer';
+import autoprefixer from "autoprefixer";
 
 const postcssConfig = {
-  plugins: [tailwindcss("./tailwind.config.js"), autoprefixer()],
+  plugins: [
+    require("@tailwindcss/postcss")({ config: "./tailwind.config.js" }),
+    autoprefixer(),
+  ],
   extract: true,
   minimize: true,
   sourceMap: true,
@@ -73,6 +75,7 @@ export default [
       postcss({
         ...postcssConfig,
         extract: "index.css",
+        include: ["src/index.css", "src/**/*.css"],
       }),
       preserveDirectives(),
     ],
@@ -124,6 +127,7 @@ export default [
       postcss({
         ...postcssConfig,
         extract: "react.css",
+        include: ["src/index.css", "src/**/*.css"],
       }),
       preserveDirectives(),
     ],
@@ -170,6 +174,7 @@ export default [
       postcss({
         ...postcssConfig,
         extract: "angular.css",
+        include: ["src/index.css", "src/**/*.css"],
       }),
     ],
     external: [
@@ -215,6 +220,7 @@ export default [
       postcss({
         ...postcssConfig,
         extract: "vanilla.css",
+        include: ["src/index.css", "src/**/*.css"],
       }),
     ],
     external: [

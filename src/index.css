@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Additional custom styles for bro-toastify */
+/* Custom styles for bro-toastify */
 .bro-toastify-container {
   position: fixed;
   z-index: 9999;

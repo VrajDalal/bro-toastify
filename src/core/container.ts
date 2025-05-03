@@ -19,9 +19,20 @@ export function createContainer(position: BroToastifyToastifyOptions['position']
     }
     console.debug('Creating container for position:', position);
 
+    function getPositionClasses(position: BroToastifyToastifyOptions['position']): string {
+        const positionClasses: Record<string, string> = {
+            'top-right': 'top-4 right-4 items-end',
+            'top-left': 'top-4 left-4 items-start',
+            'top-center': 'top-4 left-1/2 -translate-x-1/2 items-center',
+            'bottom-right': 'bottom-4 right-4 items-end',
+            'bottom-left': 'bottom-4 left-4 items-start',
+            'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center',
+        };
+        return positionClasses[position || 'top-right'];
+    }
 
     const container = document.createElement('div')
-    container.className = `broToastify-container broToastify-${position}`
+    container.className = `broToastify-container ${getPositionClasses(position)}`
     container.setAttribute('role', 'region')
     container.setAttribute('aria-live', 'polite')
     container.setAttribute('aria-atomic', 'true')
@@ -90,17 +101,17 @@ export function getContainer(position: BroToastifyToastifyOptions["position"]): 
 
 export function removeAllContainers(): void {
     if (typeof window === "undefined") {
-      return // Skip during SSR
+        return // Skip during SSR
     }
-  
+
     console.debug("Removing all containers")
     containers.forEach((container) => {
-      if (document.body.contains(container)) {
-        container.remove()
-      }
+        if (document.body.contains(container)) {
+            container.remove()
+        }
     })
     containers.clear()
-  }
+}
 
 
 

@@ -132,7 +132,7 @@ export const Toaster = ({
     };
 
     return createPortal(
-        <div className={`fixed z-[9999] flex flex-col gap-3 max-w-full max-h-screen overflow-y-auto p-4 font-sans ${positionClasses[position]}`}>
+        <div className={`bro-toastify-container ${positionClasses[position]}`}>
             {toasts.map((toast) => (
                 <div
                     key={toast.id}
