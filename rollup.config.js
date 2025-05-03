@@ -90,7 +90,7 @@ export default [
     ],
   },
   {
-    input: "src/adapters/react/index.ts",
+    input: "src/adapters/react/index.tsx",
     output: [
       {
         file: "dist/react.cjs.js",
