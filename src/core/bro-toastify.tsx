@@ -3,15 +3,12 @@ import { defaultAnimationOptions } from "./animation";
 import { AnimationType } from "./types";
 import '../index.css';
 
-// Global variable to store Toaster's animation
 let toasterAnimation: AnimationType = 'fade';
 
-// Function to set Toaster's animation
 export function setToasterAnimation(animation: AnimationType) {
     toasterAnimation = animation;
 }
 
-// Default
 const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     type: "default",
     duration: 3000,
@@ -20,68 +17,58 @@ const defaultOptions: Partial<BroToastifyToastifyOptions> = {
     pauseOnHover: true,
     customIcon: undefined,
     customClass: undefined,
-}
+};
 
-// Store for active toasts (in-memory)
 const broToastifys: Map<string, BroToastify> = new Map();
-
-// Event emitter for toast events
 const listeners: Map<string, Function[]> = new Map();
 
-// Generate Unique Id
 const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
-}
+};
 
-// Create toast function (server-safe)
 export function createBroToastify(options: BroToastifyToastifyOptions & { containerOptions?: BroToastifyContainerOptions }): BroToastify | undefined {
     if (!options.message) {
-        console.error("BroToastify: message is required")
-        return undefined
+        console.error("BroToastify: message is required");
+        return undefined;
     }
 
     const type = options.type || 'default';
     const containerOptions = options.containerOptions || {};
     const containerAnimation = containerOptions.animation
         ? { ...defaultAnimationOptions[containerOptions.animation] }
-        : defaultAnimationOptions[toasterAnimation]; // Default to fade
+        : defaultAnimationOptions[toasterAnimation];
 
     const mergedOptions = {
         ...defaultOptions,
         ...options,
         duration: options.type === 'loading' ? 0 : (options.duration ?? defaultOptions.duration),
         animation: {
-            ...defaultAnimationOptions[type], // Default animation for type
-            ...containerAnimation, // Toaster-level animation
-            ...options.animation, // Toast-specific animation (highest priority)
+            ...defaultAnimationOptions[type],
+            ...containerAnimation,
+            ...options.animation,
         },
     };
 
-    // Use the provided id if available, otherwise generate a new one
     const id = options.id || generateId();
 
     const BroToastify: BroToastify = {
         ...mergedOptions,
         id,
         createdAt: Date.now(),
-    }
+    };
 
     broToastifys.set(id, BroToastify);
-
-    // Emit event to notify the client-side Toaster
     emit('create', BroToastify);
 
-    // Auto dismiss (will only work if this code runs on the client)
     if (mergedOptions.duration && mergedOptions.duration > 0 && typeof window !== 'undefined') {
         setTimeout(() => {
             dismissBroToastify(id);
         }, mergedOptions.duration);
     }
 
-    return BroToastify
+    return BroToastify;
 }
 
-// Dismiss broToastify (server-safe)
 export function dismissBroToastify(idOrToast: string | BroToastify): void {
     let id: string;
     let toastToDismiss: BroToastify | undefined;
@@ -95,7 +82,7 @@ export function dismissBroToastify(idOrToast: string | BroToastify): void {
     }
 
     if (toastToDismiss) {
-        broToastifys.delete(id); // Remove the toast from the Map
+        broToastifys.delete(id);
         emit("dismiss", toastToDismiss);
 
         if (toastToDismiss.onClose) {
@@ -104,18 +91,16 @@ export function dismissBroToastify(idOrToast: string | BroToastify): void {
     }
 }
 
-// Clear all broToastify (server-safe)
 export function clearBroToastify(): void {
     const allBroToastifys = Array.from(broToastifys.values());
     allBroToastifys.forEach((broToastify) => {
         dismissBroToastify(broToastify.id);
-    })
+    });
 }
 
-// Subscribe to event (client-side Toaster will use this)
 export function on(event: string, callback: Function): { off: () => void } {
     if (typeof window === 'undefined') {
-        return { off: () => {} }; // No listeners on the server
+        return { off: () => {} };
     }
     if (!listeners.has(event)) {
         listeners.set(event, []);
@@ -123,7 +108,6 @@ export function on(event: string, callback: Function): { off: () => void } {
 
     listeners.get(event)!.push(callback);
 
-    // Return unsubscribe function
     return {
         off: () => {
             const callbacks = listeners.get(event);
@@ -134,10 +118,9 @@ export function on(event: string, callback: Function): { off: () => void } {
                 }
             }
         },
-    }
+    };
 }
 
-// Emit event (called by createBroToastify and dismissBroToastify)
 function emit(event: string, data: any): void {
     if (typeof window !== 'undefined') {
         const callbacks = listeners.get(event);
@@ -147,7 +130,79 @@ function emit(event: string, data: any): void {
     }
 }
 
-// Convenience methods (server-safe)
+const containers: Map<string, HTMLElement> = new Map();
+
+export function createContainer(position: BroToastifyToastifyOptions['position']): HTMLElement | null {
+    if (typeof window === 'undefined') {
+        return null;
+    }
+
+    if (containers.has(position!)) {
+        const existingContainer = containers.get(position!)!;
+        if (document.body.contains(existingContainer)) {
+            return existingContainer;
+        } else {
+            document.body.appendChild(existingContainer);
+            return existingContainer;
+        }
+    }
+
+    console.debug('Creating container for position:', position);
+
+    const container = document.createElement('div');
+    container.className = `bro-toastify-container ${getPositionClasses(position)}`;
+    container.setAttribute('role', 'region');
+    container.setAttribute('aria-live', 'polite');
+    container.setAttribute('aria-atomic', 'true');
+
+    document.body.appendChild(container);
+    containers.set(position!, container);
+
+    return container;
+}
+
+export function getContainer(position: BroToastifyToastifyOptions["position"]): HTMLElement | null {
+    if (typeof window === "undefined") {
+        return null;
+    }
+
+    if (containers.has(position!)) {
+        const container = containers.get(position!)!;
+        if (!document.body.contains(container)) {
+            document.body.appendChild(container);
+        }
+        return container;
+    }
+
+    return createContainer(position);
+}
+
+export function removeAllContainers(): void {
+    if (typeof window === "undefined") {
+        return;
+    }
+
+    console.debug("Removing all containers");
+    containers.forEach((container) => {
+        if (document.body.contains(container)) {
+            container.remove();
+        }
+    });
+    containers.clear();
+}
+
+function getPositionClasses(position: BroToastifyToastifyOptions['position']): string {
+    const positionClasses: Record<string, string> = {
+        'top-right': 'top-4 right-4 items-end',
+        'top-left': 'top-4 left-4 items-start',
+        'top-center': 'top-4 left-1/2 -translate-x-1/2 items-center',
+        'bottom-right': 'bottom-4 right-4 items-end',
+        'bottom-left': 'bottom-4 left-4 items-start',
+        'bottom-center': 'bottom-4 left-1/2 -translate-x-1/2 items-center',
+    };
+    return positionClasses[position || 'top-right'];
+}
+
 const toast = {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> & { containerOptions?: BroToastifyContainerOptions }) =>
         createBroToastify({ message, type: 'show', ...options }),

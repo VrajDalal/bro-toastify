@@ -10,6 +10,9 @@ export declare function clearBroToastify(): void;
 export declare function on(event: string, callback: Function): {
     off: () => void;
 };
+export declare function createContainer(position: BroToastifyToastifyOptions['position']): HTMLElement | null;
+export declare function getContainer(position: BroToastifyToastifyOptions["position"]): HTMLElement | null;
+export declare function removeAllContainers(): void;
 declare const toast: {
     show: (message: string, options?: Partial<BroToastifyToastifyOptions> & {
         containerOptions?: BroToastifyContainerOptions;
