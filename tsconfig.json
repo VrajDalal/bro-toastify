@@ -1,17 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "types": ["jest", "@testing-library/jest-dom"],
-    "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "esModuleInterop": true,
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
     "strict": true,
-    "declaration": true,
-    "declarationDir": "dist/types",
-    "outDir": "dist",
-    "skipLibCheck": true
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
-  "include": ["src/**/*","test", "tailwind.config.js"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

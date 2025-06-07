@@ -5,7 +5,7 @@ import '../index.css';
 
 let toasterAnimation: AnimationType = 'fade';
 
-const timerRefs: Map<string, number | null> = new Map();
+const timerRefs: Map<string, ReturnType<typeof setTimeout> | null> = new Map();
 
 export function setToasterAnimation(animation: AnimationType) {
     toasterAnimation = animation;
