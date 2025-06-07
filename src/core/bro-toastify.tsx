@@ -5,6 +5,8 @@ import '../index.css';
 
 let toasterAnimation: AnimationType = 'fade';
 
+const timerRefs: Map<string, number | null> = new Map();
+
 export function setToasterAnimation(animation: AnimationType) {
     toasterAnimation = animation;
 }
@@ -25,6 +27,24 @@ const listeners: Map<string, Function[]> = new Map();
 const generateId = () => {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 5);
 };
+
+export function pauseTimer(id: string) {
+    const timer = timerRefs.get(id);
+    if (timer) {
+        clearTimeout(timer);
+        timerRefs.set(id, null);
+    }
+}
+
+export function resumeTimer(id: string, duration: number) {
+    const toast = broToastifys.get(id);
+    if (toast && duration > 0 && toast.type !== 'loading') {
+        const timer = setTimeout(() => {
+            dismissBroToastify(id);
+        }, duration);
+        timerRefs.set(id, timer);
+    }
+}
 
 export function createBroToastify(options: BroToastifyToastifyOptions & { containerOptions?: BroToastifyContainerOptions }): BroToastify | undefined {
     if (!options.message) {
@@ -61,9 +81,10 @@ export function createBroToastify(options: BroToastifyToastifyOptions & { contai
     emit('create', BroToastify);
 
     if (mergedOptions.duration && mergedOptions.duration > 0 && typeof window !== 'undefined') {
-        setTimeout(() => {
+        const timer = setTimeout(() => {
             dismissBroToastify(id);
         }, mergedOptions.duration);
+        timerRefs.set(id, timer);
     }
 
     return BroToastify;
@@ -82,6 +103,13 @@ export function dismissBroToastify(idOrToast: string | BroToastify): void {
     }
 
     if (toastToDismiss) {
+        // Clear the timer when dismissing
+        const timer = timerRefs.get(id);
+        if (timer) {
+            clearTimeout(timer);
+            timerRefs.delete(id);
+        }
+
         broToastifys.delete(id);
         emit("dismiss", toastToDismiss);
 
@@ -100,7 +128,7 @@ export function clearBroToastify(): void {
 
 export function on(event: string, callback: Function): { off: () => void } {
     if (typeof window === 'undefined') {
-        return { off: () => {} };
+        return { off: () => { } };
     }
     if (!listeners.has(event)) {
         listeners.set(event, []);

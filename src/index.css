@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/preflight";
 
 /* Custom styles for bro-toastify */
 .bro-toastify-container {
@@ -15,16 +13,3 @@
   padding: 1rem;
   font-family: ui-sans-serif, system-ui, sans-serif;
 }
-
-/* Ensure animations are globally available */
-@keyframes fade {
-  0% { opacity: 0; }
-  100% { opacity: 1; }
-}
-
-@keyframes topSlide {
-  0% { transform: translateY(-100%); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-/* Add other keyframes as needed */

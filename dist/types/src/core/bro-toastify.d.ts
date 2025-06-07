@@ -2,6 +2,8 @@ import { BroToastify, BroToastifyToastifyOptions, BroToastifyContainerOptions } 
 import { AnimationType } from "./types";
 import '../index.css';
 export declare function setToasterAnimation(animation: AnimationType): void;
+export declare function pauseTimer(id: string): void;
+export declare function resumeTimer(id: string, duration: number): void;
 export declare function createBroToastify(options: BroToastifyToastifyOptions & {
     containerOptions?: BroToastifyContainerOptions;
 }): BroToastify | undefined;
