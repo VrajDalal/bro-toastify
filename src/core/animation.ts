@@ -47,38 +47,38 @@ export function applyAnimation(
   };
 
   // Add reverse animations for smooth dismissal
-  const style = document.createElement('style');
-  style.textContent = `
-    .animate-topSlideReverse {
-      animation: topSlideReverse 0.3s ease-in-out forwards;
-    }
-    @keyframes topSlideReverse {
-      from { transform: translateY(0); opacity: 1; }
-      to { transform: translateY(-100%); opacity: 0; }
-    }
-    .animate-rightSlideReverse {
-      animation: rightSlideReverse 0.3s ease-in-out forwards;
-    }
-    @keyframes rightSlideReverse {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
-    }
-    .animate-bottomSlideReverse {
-      animation: bottomSlideReverse 0.3s ease-in-out forwards;
-    }
-    @keyframes bottomSlideReverse {
-      from { transform: translateY(0); opacity: 1; }
-      to { transform: translateY(100%); opacity: 0; }
-    }
-    .animate-leftSlideReverse {
-      animation: leftSlideReverse 0.3s ease-in-out forwards;
-    }
-    @keyframes leftSlideReverse {
-      from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(-100%); opacity: 0; }
-    }
-  `;
-  document.head.appendChild(style);
+  // const style = document.createElement('style');
+  // style.textContent = `
+  //   .animate-topSlideReverse {
+  //     animation: topSlideReverse 0.3s ease-in-out forwards;
+  //   }
+  //   @keyframes topSlideReverse {
+  //     from { transform: translateY(0); opacity: 1; }
+  //     to { transform: translateY(-100%); opacity: 0; }
+  //   }
+  //   .animate-rightSlideReverse {
+  //     animation: rightSlideReverse 0.3s ease-in-out forwards;
+  //   }
+  //   @keyframes rightSlideReverse {
+  //     from { transform: translateX(0); opacity: 1; }
+  //     to { transform: translateX(100%); opacity: 0; }
+  //   }
+  //   .animate-bottomSlideReverse {
+  //     animation: bottomSlideReverse 0.3s ease-in-out forwards;
+  //   }
+  //   @keyframes bottomSlideReverse {
+  //     from { transform: translateY(0); opacity: 1; }
+  //     to { transform: translateY(100%); opacity: 0; }
+  //   }
+  //   .animate-leftSlideReverse {
+  //     animation: leftSlideReverse 0.3s ease-in-out forwards;
+  //   }
+  //   @keyframes leftSlideReverse {
+  //     from { transform: translateX(0); opacity: 1; }
+  //     to { transform: translateX(-100%); opacity: 0; }
+  //   }
+  // `;
+  // document.head.appendChild(style);
 
   const animationClass = animationClasses[type];
   if (animationClass) {
